@@ -14,17 +14,46 @@
     <nav class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
-                <a href="/" class="flex-shrink-0 flex items-center cursor-pointer">
+
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='/'">
                     <img class="h-10 w-auto"
                         src="https://xmauez-hk.myshopify.com/cdn/shop/files/logo.png?height=36&v=1764654657"
                         alt="Logo" />
-                    <!-- <span class="ml-3 font-bold text-gray-800 text-lg hidden md:block">屯门妇联</span> -->
-                </a>
+                </div>
 
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="/" class="text-gray-500 hover:text-blue-600 font-medium transition"><%= __('nav_home') %></a>
-                    <a href="/about" class="text-blue-600 font-bold transition"><%= __('nav_about') %></a>
-                    <a href="/contact" class="text-gray-500 hover:text-blue-600 font-medium transition">联系我们</a>
+                <div id="react_search_root" class="flex-1 max-w-lg mx-4 md:mx-8"></div>
+
+                <div class="hidden md:flex items-center gap-6">
+
+                    <div class="flex space-x-6 text-sm font-medium">
+                        <a href="/" class="text-gray-700 hover:text-blue-600 transition">
+                            <%= __('nav_home') %>
+                        </a>
+                        <a href="/about" class="text-gray-700 hover:text-blue-600 transition">
+                            <%= __('nav_about') %>
+                        </a>
+                        <a href="/contact" class="text-gray-700 hover:text-blue-600 transition">
+                            <%= __('nav_contact') %>
+                        </a>
+                    </div>
+
+                    <div class="h-4 w-px bg-gray-300"></div>
+
+                    <div class="flex items-center gap-2 text-xs font-bold text-gray-600">
+                        <a href="/lang/zh-CN"
+                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-CN' ? 'bg-gray-100 text-black' : '' %>">
+                            简
+                        </a>
+                        <a href="/lang/zh-TW"
+                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-TW' ? 'bg-gray-100 text-black' : '' %>">
+                            繁
+                        </a>
+                        <a href="/lang/en"
+                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'en' ? 'bg-gray-100 text-black' : '' %>">
+                            En
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -38,10 +67,11 @@
         </div>
         <div class="relative max-w-7xl mx-auto h-full flex flex-col justify-center items-center text-center px-4">
             <h1 class="text-4xl font-extrabold text-white sm:text-5xl drop-shadow-lg tracking-wider">
-                关于我们
+                <%= __("about_us_title1") %>
             </h1>
             <p class="mt-4 text-xl text-gray-200 max-w-2xl">
-                服务社区 · 关爱邻里 · 共同成长
+                <%= __("about_us_title2") %>
+
             </p>
         </div>
     </div>
@@ -50,26 +80,26 @@
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row">
             <div class="p-8 md:p-12 md:w-2/3">
                 <div class="uppercase tracking-wide text-sm text-blue-600 font-semibold mb-2">Since 1998</div>
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">屯门妇联山景服务处</h2>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6"><%= __('屯门妇联山景服务处标题') %></h2>
                 <p class="text-gray-600 leading-relaxed text-lg mb-6">
-                    本处于1998年成立，服务对象包括儿童及青少年、成人及长者，并提供适合不同年龄人士的活动及课程。我们致力于构建和谐社区，通过多元化的服务满足居民的身心发展需求。
+                    <%= __('屯门妇联山景服务处简介') %>
                 </p>
 
                 <div class="bg-blue-50 rounded-lg p-6 border border-blue-100">
                     <h3 class="font-bold text-gray-800 mb-4 flex items-center">
-                        <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i> 联系方式
+                        <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i> <%= __('联系方式') %>
                     </h3>
                     <ul class="space-y-3 text-gray-700">
                         <li class="flex items-start">
-                            <span class="font-medium min-w-[60px]">地址：</span>
-                            <span>屯门山景村山景社区会堂</span>
+                            <span class="font-medium min-w-[60px]"><%= __('地址：') %></span>
+                            <span><%= __('屯门山景村山景社区会堂') %></span>
                         </li>
                         <li class="flex items-center">
-                            <span class="font-medium min-w-[60px]">电话：</span>
+                            <span class="font-medium min-w-[60px]"><%= __('电话：') %></span>
                             <a href="tel:24673867" class="hover:text-blue-600 transition">2467 3867</a>
                         </li>
                         <li class="flex items-center">
-                            <span class="font-medium min-w-[60px]">传真：</span>
+                            <span class="font-medium min-w-[60px]"><%= __('传真：') %></span>
                             <span>2467 3822</span>
                         </li>
                     </ul>
@@ -87,8 +117,8 @@
     <section class="bg-white py-16 border-t border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-gray-900">核心服务内容</h2>
-                <p class="mt-4 text-gray-500">为社区居民提供全方位的支持与发展机会</p>
+                <h2 class="text-3xl font-bold text-gray-900"><%= __('核心服务内容') %></h2>
+                <p class="mt-4 text-gray-500"><%= __('核心服务内容小标题') %></p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
@@ -102,9 +132,9 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">多类型的文娱康体活动</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3"><%= __('多类型的文娱康体活动') %></h3>
                         <p class="text-gray-600 leading-relaxed text-sm">
-                            提供多种以儿童、青少年及家庭为对象的文娱康体活动，透过如家庭外游，青少年聚会、日营、交流团、亲子活动、免费电影放映会等形式，以满足不同家庭成员的文娱需要，让参加者发掘及培养兴趣，促进身心发展。
+                            <%= __('多类型的文娱康体活动内容') %>
                         </p>
                     </div>
                 </div>
@@ -118,9 +148,9 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">主题讲座及个人发展课程</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3"><%= __('主题讲座及个人发展课程') %></h3>
                         <p class="text-gray-600 leading-relaxed text-sm">
-                            中心不时举办不同专题之讲座及课程活动，如法律专题讲座、品德教育讲座、家长增值课程、兴趣班组及儿童多元智能培训课程等等，惠及不同对象，推广社区教育，帮助居民自我发展。
+                            <%= __('主题讲座及个人发展课程内容') %>
                         </p>
                     </div>
                 </div>
@@ -134,9 +164,9 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">专业教育培训</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3"><%= __('专业教育培训') %></h3>
                         <p class="text-gray-600 leading-relaxed text-sm">
-                            为鼓励区内居民自我增值，提升市场竞争水平，中心为市民提供不同的进修路径，包括举办再培训课程、人材发展课程、专业培训课程和持续进修课程等。
+                            <%= __('专业教育培训内容') %>
                         </p>
                     </div>
                 </div>
@@ -150,9 +180,9 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">义务工作发展</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3"><%= __('义务工作发展') %></h3>
                         <p class="text-gray-600 leading-relaxed text-sm">
-                            中心招募一批区内热心人士组成中心义工队，策划及组织多元化的培训活动及社会服务，培养他们成为具自信、关爱社区的一群，发扬义工服务精神，回馈社会。
+                            <%= __('义务工作发展内容') %>
                         </p>
                     </div>
                 </div>
@@ -164,7 +194,7 @@
     <footer class="bg-white border-t border-gray-200 mt-auto">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-base text-gray-400">
-                &copy; 2025 屯門婦聯山景服務處. All rights reserved.
+                &copy; <%= __('2025 屯門婦聯山景服務處. All rights reserved.') %>
             </p>
         </div>
     </footer>
