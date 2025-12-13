@@ -3,6 +3,65 @@
 <head>
     <title>后台管理面板</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 多选下拉框样式 */
+        .multi-select-wrapper { position: relative; }
+        .multi-display-box {
+            min-height: 42px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            background: white;
+        }
+        .tag-chip {
+            background-color: #e0e7ff; /* blue-100 */
+            color: #3730a3; /* indigo-800 */
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .tag-remove { cursor: pointer; hover: text-red-500; }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            z-index: 50;
+            width: 100%;
+            max-height: 240px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-top: 4px;
+        }
+        .dropdown-menu.show { display: block; }
+        .dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .dropdown-item:hover { background-color: #f3f4f6; }
+        .dropdown-item.selected { background-color: #eff6ff; color: #2563eb; }
+        .dropdown-item.selected::after { content: '✔'; font-size: 12px; }
+        
+        .add-btn-area {
+            border-top: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .add-btn-area:hover { background-color: #f9fafb; color: #2563eb; }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
     <nav class="bg-gray-800 text-white p-4 flex justify-between items-center sticky top-0 z-50">
@@ -14,112 +73,82 @@
         </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         <div class="bg-white p-6 rounded shadow h-fit lg:col-span-1">
-            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-purple-700">1. 分类标签管理</h3>
+            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-green-700">发布新课程</h3>
             
-            <form action="/admin/category/add" method="POST" class="mb-6 flex gap-2">
-                <input type="text" name="name" placeholder="新标签(如:美术)" class="w-full border rounded p-2 text-sm" required>
-                <button type="submit" class="bg-purple-600 text-white px-3 rounded hover:bg-purple-700 text-sm">添加</button>
-            </form>
-
-            <ul class="space-y-2 max-h-60 overflow-y-auto">
-                <% if(categories.length === 0) { %>
-                    <li class="text-gray-400 text-sm">暂无分类，请添加</li>
-                <% } %>
-
-                <% categories.forEach(cat => { %>
-                <li class="flex justify-between items-center bg-gray-50 p-2 rounded border">
-                    <span class="text-gray-700"><%= cat.name %></span>
-                    <a href="/admin/category/delete/<%= cat._id %>" class="text-red-500 hover:text-red-700 text-xs font-bold">X</a>
-                </li>
-                <% }) %>
-            </ul>
-        </div>
-
-        <div class="bg-white p-6 rounded shadow h-fit lg:col-span-1">
-            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-green-700">2. 发布新课程</h3>
             <form action="/admin/course/add" method="POST" enctype="multipart/form-data" class="space-y-4">
                 
                 <div>
-                    <label class="block text-sm font-medium">课程名称</label>
-                    <input type="text" name="title" class="w-full border rounded p-2" required>
+                    <label class="block text-sm font-medium text-gray-700">课程名称</label>
+                    <input type="text" name="title" class="w-full border rounded p-2 focus:ring-2 focus:ring-green-200 outline-none" required>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-sm font-medium">价格 (HK$)</label>
-                        <input type="number" name="price" class="w-full border rounded p-2" required>
+                        <label class="block text-sm font-medium text-gray-700">价格 (HK$)</label>
+                        <input type="number" name="price" class="w-full border rounded p-2 focus:ring-2 focus:ring-green-200 outline-none" required>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium">分类标签</label>
-                        <select name="category" class="w-full border rounded p-2" required>
-                            <option value="" disabled selected>请选择...</option>
-                            <% categories.forEach(cat => { %>
-                                <option value="<%= cat.name %>"><%= cat.name %></option>
-                            <% }) %>
-                        </select>
-                        <% if(categories.length === 0) { %>
-                           <p class="text-xs text-red-500 mt-1">请先在左侧添加分类!</p>
-                        <% } %>
+                    
+                    <div class="multi-select-wrapper" id="category-select">
+                        <label class="block text-sm font-medium text-gray-700">分类标签 (可多选)</label>
+                        <input type="hidden" name="category" id="category-input"> <div class="multi-display-box border rounded p-2" onclick="toggleDropdown('category-select')">
+                            <span class="text-gray-400 text-sm ml-1 placeholder-text">请选择...</span>
+                        </div>
+
+                        <div class="dropdown-menu" id="category-list">
+                            <div id="category-options-container"></div>
+                            
+                            <div class="add-btn-area flex items-center gap-2" onclick="addNewCategory(event)">
+                                <i class="fas fa-plus"></i>
+                                <span>新建分类标签</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-sm font-medium">开课时间</label>
+                        <label class="block text-sm font-medium text-gray-700">开课时间</label>
                         <input type="date" name="startTime" class="w-full border rounded p-2" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium">结课时间</label>
+                        <label class="block text-sm font-medium text-gray-700">结课时间</label>
                         <input type="date" name="endTime" class="w-full border rounded p-2" required>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium mb-2">上课时间 (可多选)</label>
-                    <div class="grid grid-cols-2 gap-y-2 gap-x-1 text-sm">
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="weekDay" value="星期一" class="text-green-600 rounded"><span>星期一</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="weekDay" value="星期二" class="text-green-600 rounded"><span>星期二</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="weekDay" value="星期三" class="text-green-600 rounded"><span>星期三</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="weekDay" value="星期四" class="text-green-600 rounded"><span>星期四</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="weekDay" value="星期五" class="text-green-600 rounded"><span>星期五</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="weekDay" value="星期六" class="text-green-600 rounded"><span>星期六</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="checkbox" name="weekDay" value="星期日" class="text-green-600 rounded"><span>星期日</span>
-                        </label>
+                <div class="multi-select-wrapper" id="weekday-select">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">上课时间 (可多选)</label>
+                    <input type="hidden" name="weekDay" id="weekday-input">
+                    
+                    <div class="multi-display-box border rounded p-2" onclick="toggleDropdown('weekday-select')">
+                        <span class="text-gray-400 text-sm ml-1 placeholder-text">请选择...</span>
+                    </div>
+
+                    <div class="dropdown-menu">
+                        <div id="weekday-options-container">
+                            </div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium">课程简介</label>
+                    <label class="block text-sm font-medium text-gray-700">课程简介</label>
                     <textarea name="description" rows="2" class="w-full border rounded p-2"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium">课程封面图</label>
+                    <label class="block text-sm font-medium text-gray-700">课程封面图</label>
                     <input type="file" name="image" accept="image/*" class="w-full border rounded p-2 bg-gray-50" required>
                 </div>
 
-                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-bold shadow-md">发布课程</button>
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-bold shadow-md transition">发布课程</button>
             </form>
         </div>
 
         <div class="bg-white p-6 rounded shadow lg:col-span-2">
-            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">3. 已发布课程 (<%= courses.length %>)</h3>
+            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">已发布课程 (<%= courses.length %>)</h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
@@ -137,18 +166,25 @@
                             </td>
                             <td class="px-3 py-2">
                                 <div class="font-bold text-gray-900 text-base"><%= course.title %></div>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded">
-                                        <%= course.category %>
-                                    </span>
-                                    <span class="text-red-600 font-bold">HK$<%= course.price %></span>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    <% course.category.forEach(cat => { %>
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded">
+                                            <%= cat %>
+                                        </span>
+                                    <% }) %>
+                                    <span class="text-red-600 font-bold ml-2">HK$<%= course.price %></span>
                                 </div>
                                 <div class="text-xs text-gray-500 mt-1">
-                                    📅 <%= course.startTime %> 至 <%= course.endTime %> | <%= course.weekDay %>
+                                    📅 <%= course.startTime %> ~ <%= course.endTime %>
+                                </div>
+                                <div class="flex flex-wrap gap-1 mt-1 text-xs text-purple-600 font-medium">
+                                    <% course.weekDay.forEach(day => { %>
+                                        <span><%= day %></span>
+                                    <% }) %>
                                 </div>
                             </td>
                             <td class="px-3 py-2">
-                                <a href="/admin/course/delete/<%= course._id %>" onclick="return confirm('确定要删除课程：<%= course.title %> 吗？')" class="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-xs">
+                                <a href="/admin/course/delete/<%= course._id %>" onclick="return confirm('确定要删除吗？')" class="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-xs">
                                     删除
                                 </a>
                             </td>
@@ -159,5 +195,176 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // 初始化数据
+        let categories = <%- JSON.stringify(categories) %>;
+        const weekDays = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'];
+
+        // 状态存储
+        const state = {
+            'category-select': { selected: [], options: categories, type: 'category' },
+            'weekday-select': { selected: [], options: weekDays.map(d => ({ name: d })), type: 'weekday' }
+        };
+
+        // 初始化渲染
+        renderOptions('category-select');
+        renderOptions('weekday-select');
+
+        // 通用渲染函数
+        function renderOptions(wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            const container = wrapper.querySelector(state[wrapperId].type === 'category' ? '#category-options-container' : '#weekday-options-container');
+            container.innerHTML = '';
+
+            const currentData = state[wrapperId];
+
+            currentData.options.forEach(opt => {
+                const isSelected = currentData.selected.includes(opt.name);
+                const div = document.createElement('div');
+                div.className = `dropdown-item ${isSelected ? 'selected' : ''}`;
+                div.onclick = (e) => toggleSelection(e, wrapperId, opt.name);
+                
+                // 内容结构
+                let content = `<span>${opt.name}</span>`;
+                
+                // 如果是分类，添加删除按钮
+                if (currentData.type === 'category') {
+                    content += `<i onclick="deleteCategory(event, '${opt._id}', '${opt.name}')" class="fas fa-trash-alt text-gray-300 hover:text-red-500 transition px-2"></i>`;
+                }
+                
+                div.innerHTML = content;
+                container.appendChild(div);
+            });
+
+            updateDisplay(wrapperId);
+        }
+
+        // 切换选中状态
+        function toggleSelection(e, wrapperId, value) {
+            // 防止触发外层点击
+            if(e) e.stopPropagation();
+
+            const current = state[wrapperId].selected;
+            const index = current.indexOf(value);
+            
+            if (index > -1) {
+                current.splice(index, 1); // 取消选中
+            } else {
+                current.push(value); // 选中
+            }
+
+            renderOptions(wrapperId); // 重新渲染列表(更新高亮)
+        }
+
+        // 更新显示框和隐藏 Input
+        function updateDisplay(wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            const displayBox = wrapper.querySelector('.multi-display-box');
+            const input = wrapper.querySelector('input[type="hidden"]');
+            const placeholder = displayBox.querySelector('.placeholder-text');
+            const selected = state[wrapperId].selected;
+
+            // 更新 Input 值 (逗号分隔)
+            input.value = selected.join(',');
+
+            // 清空现有标签（保留 placeholder 结构用于判断）
+            displayBox.innerHTML = '';
+
+            if (selected.length === 0) {
+                displayBox.innerHTML = '<span class="text-gray-400 text-sm ml-1 placeholder-text">请选择...</span>';
+            } else {
+                selected.forEach(val => {
+                    const tag = document.createElement('span');
+                    tag.className = 'tag-chip';
+                    tag.innerHTML = `${val} <span class="tag-remove" onclick="removeTag(event, '${wrapperId}', '${val}')">&times;</span>`;
+                    displayBox.appendChild(tag);
+                });
+            }
+        }
+
+        // 点击标签上的 X 移除
+        function removeTag(e, wrapperId, value) {
+            e.stopPropagation();
+            toggleSelection(null, wrapperId, value);
+        }
+
+        // 切换下拉框显示
+        function toggleDropdown(wrapperId) {
+            const menu = document.querySelector(`#${wrapperId} .dropdown-menu`);
+            const allMenus = document.querySelectorAll('.dropdown-menu');
+            
+            // 关闭其他所有打开的菜单
+            allMenus.forEach(m => {
+                if (m !== menu) m.classList.remove('show');
+            });
+
+            menu.classList.toggle('show');
+        }
+
+        // === 分类特有逻辑 ===
+
+        // 添加新分类
+        async function addNewCategory(e) {
+            e.stopPropagation(); // 防止关闭下拉框
+            const name = prompt("请输入新分类标签名称:");
+            if (!name) return;
+
+            try {
+                const res = await fetch('/admin/category/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name })
+                });
+                const json = await res.json();
+
+                if (json.status === 'ok') {
+                    // 更新本地数据
+                    state['category-select'].options.push(json.data);
+                    // 自动选中新添加的
+                    state['category-select'].selected.push(json.data.name);
+                    renderOptions('category-select');
+                } else {
+                    alert(json.msg || '添加失败');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('网络错误');
+            }
+        }
+
+        // 删除分类
+        async function deleteCategory(e, id, name) {
+            e.stopPropagation();
+            if (!confirm(`确定要删除标签【${name}】吗？`)) return;
+
+            try {
+                const res = await fetch(`/admin/category/delete/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+
+                if (json.status === 'ok') {
+                    // 从选项中移除
+                    state['category-select'].options = state['category-select'].options.filter(c => c._id !== id);
+                    // 从已选中移除
+                    state['category-select'].selected = state['category-select'].selected.filter(s => s !== name);
+                    renderOptions('category-select');
+                } else {
+                    alert('删除失败');
+                }
+            } catch (err) {
+                alert('网络错误');
+            }
+        }
+
+        // 点击外部关闭下拉框
+        document.addEventListener('click', function(e) {
+            const wrappers = document.querySelectorAll('.multi-select-wrapper');
+            wrappers.forEach(wrapper => {
+                if (!wrapper.contains(e.target)) {
+                    wrapper.querySelector('.dropdown-menu').classList.remove('show');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

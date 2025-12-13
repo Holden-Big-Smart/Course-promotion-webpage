@@ -87,41 +87,36 @@ router.get("/dashboard", checkLogin, async (req, res) => {
 });
 
 // --- 5. 添加课程 (包含图片上传) ---
-router.post(
-  "/course/add",
-  checkLogin,
-  upload.single("image"),
-  async (req, res) => {
+router.post('/course/add', checkLogin, upload.single('image'), async (req, res) => {
     try {
-      let { title, price, startTime, endTime, weekDay, description, category } =
-        req.body;
+        let { title, price, startTime, endTime, weekDay, description, category } = req.body;
+        
+        // 1. 处理 weekDay (前端传过来的是逗号分隔字符串 "星期一,星期三")
+        // 我们将其转为数组
+        if (weekDay) {
+            weekDay = weekDay.split(',').filter(item => item.trim() !== '');
+        } else {
+            weekDay = [];
+        }
 
-      // 处理 weekDay：如果是多选，它是数组；如果是单选，它是字符串；如果没选，它是 undefined
-      // 我们统一将其转换为字符串存储，例如 "星期一 星期三"
-      if (Array.isArray(weekDay)) {
-        weekDay = weekDay.join(" ");
-      } else if (!weekDay) {
-        weekDay = "";
-      }
+        // 2. 处理 category (前端传过来的是逗号分隔字符串 "艺术,儿童")
+        if (category) {
+            category = category.split(',').filter(item => item.trim() !== '');
+        } else {
+            category = [];
+        }
 
-      const image = req.file ? `/uploads/${req.file.filename}` : "";
-
-      await CourseModel.create({
-        title,
-        price,
-        startTime,
-        endTime,
-        weekDay,
-        description,
-        category,
-        image,
-      });
-      res.redirect("/admin/dashboard");
+        const image = req.file ? `/uploads/${req.file.filename}` : '';
+        
+        await CourseModel.create({
+            title, price, startTime, endTime, weekDay, description, category, image
+        });
+        res.redirect('/admin/dashboard');
     } catch (err) {
-      res.render("error", { message: "添加失败", error: err });
+        console.error(err);
+        res.render('error', { message: '添加失败', error: err });
     }
-  }
-);
+});
 
 // --- 6. 删除课程 ---
 router.get("/course/delete/:id", checkLogin, async (req, res) => {
@@ -144,28 +139,33 @@ router.get("/course/delete/:id", checkLogin, async (req, res) => {
 
 // --- 分类管理路由 ---
 
-// 添加分类
-router.post("/category/add", checkLogin, async (req, res) => {
-  try {
-    const { name } = req.body;
-    // 简单去重检查
-    const exists = await CategoryModel.findOne({ name });
-    if (!exists) {
-      await CategoryModel.create({ name });
+// 添加分类 (API)
+router.post('/category/add', checkLogin, async (req, res) => {
+    try {
+        const { name } = req.body;
+        if(!name) return res.json({ status: 'error', msg: '名称不能为空' });
+
+        const exists = await CategoryModel.findOne({ name });
+        if (!exists) {
+            const newCat = await CategoryModel.create({ name });
+            // 返回新建的分类对象，包含 _id 和 name
+            res.json({ status: 'ok', data: newCat });
+        } else {
+            res.json({ status: 'error', msg: '分类已存在' });
+        }
+    } catch (err) {
+        res.json({ status: 'error', msg: '添加失败', error: err });
     }
-    res.redirect("/admin/dashboard");
-  } catch (err) {
-    res.render("error", { message: "添加分类失败", error: err });
-  }
 });
 
-// 删除分类
-router.get("/category/delete/:id", checkLogin, async (req, res) => {
-  try {
-    await CategoryModel.deleteOne({ _id: req.params.id });
-    res.redirect("/admin/dashboard");
-  } catch (err) {
-    res.render("error", { message: "删除分类失败", error: err });
-  }
+// 删除分类 (API)
+router.delete('/category/delete/:id', checkLogin, async (req, res) => {
+    try {
+        await CategoryModel.deleteOne({ _id: req.params.id });
+        res.json({ status: 'ok' });
+    } catch (err) {
+        res.json({ status: 'error', msg: '删除失败' });
+    }
 });
+
 module.exports = router;

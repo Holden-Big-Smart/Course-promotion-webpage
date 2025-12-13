@@ -77,10 +77,11 @@ app.use("/api", loginApiRouter);
 
 // 注册路由
 app.use('/', indexRouter); // 前台 (主页, 详情等)
+app.use('/', loginRouter);
 app.use('/admin', adminRouter); // 后台 (所有 /admin 开头的都走这里)
 
 // 4. [新增] 注册课程相关 API (如搜索功能 /api/course/search)
-// app.use('/api/course', courseApiRouter);
+app.use('/api/course', courseApiRouter);
 
 // --- 错误处理 ---
 
