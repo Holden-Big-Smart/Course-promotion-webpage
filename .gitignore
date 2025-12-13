@@ -1,0 +1,11 @@
+/public/upload
+
+# 忽略 Shopify 主题导出文件夹
+theme_export_*
+
+# 忽略系统文件
+.DS_Store
+Thumbs.db
+
+# 如果是前端项目，通常也要忽略依赖包
+node_modules/
