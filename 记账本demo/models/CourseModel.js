@@ -3,18 +3,19 @@
 
 const mongoose = require('mongoose');
 
-// 定义 Schema
 const CourseSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  originalPrice: { type: Number, required: true },
-  price: { type: Number, required: true },
-  image: { type: String, required: true },
-  description: { type: String, default: "暂无介绍" },
-  category: { type: String, default: "全部" }
+  title: { type: String, required: true }, // 课程名称
+  price: { type: Number, required: true }, // 课程价格
+  originalPrice: { type: Number, default: 0 }, // 原价(可选)
+  image: { type: String, required: true }, // 图片路径
+  description: { type: String, default: "暂无介绍" }, // 课程简介
+  category: { type: String, default: "全部" }, // 课程分类标签
+  
+  // --- 新增字段 ---
+  startTime: { type: String, required: true }, // 开课时间 (存字符串 "2023-10-01" 或日期对象)
+  endTime: { type: String, required: true },   // 结课时间
+  weekDay: { type: String, required: true },   // 星期标签 (如 "逢星期六")
 });
 
-// 创建模型对象
 const CourseModel = mongoose.model('course', CourseSchema);
-
-// ⚠️ 重点检查这里：必须直接导出 CourseModel 对象
 module.exports = CourseModel;

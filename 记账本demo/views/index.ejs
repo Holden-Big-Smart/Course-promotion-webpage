@@ -24,7 +24,6 @@
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition">关于我们</a>
                     <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium transition">联系我们</a>
-                    <a href="/admin" class="px-4 py-2 bg-gray-800 text-white rounded-md text-sm hover:bg-gray-700 transition">管理员</a>
                 </div>
             </div>
         </div>
@@ -59,7 +58,7 @@
                 <% courses.forEach(function(item) { %>
                 <div class="group relative bg-white border border-gray-100 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300">
                     <div class="w-full h-64 bg-gray-100 aspect-w-1 aspect-h-1 overflow-hidden group-hover:opacity-90">
-                        <img src="<%= item.image %>" alt="<%= item.title %>" class="w-full h-full object-center object-contain p-4 group-hover:scale-105 transition-transform duration-300">
+                        <img src="<%= item.image %>" loading="lazy" alt="<%= item.title %>" class="w-full h-full object-center object-contain p-4 group-hover:scale-105 transition-transform duration-300">
                     </div>
                     
                     <div class="p-4 text-center">

@@ -19,7 +19,7 @@ var indexRouter = require("./routes/web/index");
 
 // 2. 导入 web 端管理员登录/注册路由
 const loginRouter = require("./routes/web/login");
-
+const adminRouter = require('./routes/web/admin'); // 引入新路由
 // 3. 导入 api 端管理员登录接口
 const loginApiRouter = require("./routes/api/login-api");
 
@@ -75,8 +75,12 @@ app.use("/", loginRouter);
 // 3. 注册 api 登录接口
 app.use("/api", loginApiRouter);
 
+// 注册路由
+app.use('/', indexRouter); // 前台 (主页, 详情等)
+app.use('/admin', adminRouter); // 后台 (所有 /admin 开头的都走这里)
+
 // 4. [新增] 注册课程相关 API (如搜索功能 /api/course/search)
-app.use('/api/course', courseApiRouter);
+// app.use('/api/course', courseApiRouter);
 
 // --- 错误处理 ---
 

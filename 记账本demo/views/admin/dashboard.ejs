@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>后台管理面板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-gray-800 text-white p-4 flex justify-between items-center">
+        <span class="font-bold text-xl">课程管理后台</span>
+        <div>
+            <span class="mr-4">欢迎, <%= user %></span>
+            <a href="/" target="_blank" class="mr-4 hover:text-gray-300">查看前台</a>
+            <a href="/admin/logout" class="bg-red-500 px-3 py-1 rounded text-sm hover:bg-red-600">退出</a>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="bg-white p-6 rounded shadow lg:col-span-1 h-fit">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2">发布新课程</h3>
+            <form action="/admin/course/add" method="POST" enctype="multipart/form-data" class="space-y-4">
+                
+                <div>
+                    <label class="block text-sm font-medium">课程名称</label>
+                    <input type="text" name="title" class="w-full border rounded p-2" required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-sm font-medium">价格 (HK$)</label>
+                        <input type="number" name="price" class="w-full border rounded p-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">分类标签</label>
+                        <select name="category" class="w-full border rounded p-2">
+                            <option value="全部">全部</option>
+                            <option value="儿童">儿童</option>
+                            <option value="成人">成人</option>
+                            <option value="长者">长者</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-sm font-medium">开课时间</label>
+                        <input type="date" name="startTime" class="w-full border rounded p-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">结课时间</label>
+                        <input type="date" name="endTime" class="w-full border rounded p-2" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">星期标签</label>
+                    <input type="text" name="weekDay" placeholder="例如: 逢星期六 / 每周三五" class="w-full border rounded p-2" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">课程简介</label>
+                    <textarea name="description" rows="3" class="w-full border rounded p-2"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">课程封面图 (存入 public/uploads)</label>
+                    <input type="file" name="image" accept="image/*" class="w-full border rounded p-2 bg-gray-50" required>
+                </div>
+
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-bold">立即发布</button>
+            </form>
+        </div>
+
+        <div class="bg-white p-6 rounded shadow lg:col-span-2">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2">已发布课程列表 (<%= courses.length %>)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-3">图片</th>
+                            <th class="px-4 py-3">名称</th>
+                            <th class="px-4 py-3">时间/星期</th>
+                            <th class="px-4 py-3">价格</th>
+                            <th class="px-4 py-3">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% courses.forEach(course => { %>
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td class="px-4 py-2">
+                                <img src="<%= course.image %>" class="w-12 h-12 object-cover rounded">
+                            </td>
+                            <td class="px-4 py-2 font-medium text-gray-900">
+                                <%= course.title %>
+                                <span class="block text-xs text-blue-500"><%= course.category %></span>
+                            </td>
+                            <td class="px-4 py-2">
+                                <div class="text-xs">起: <%= course.startTime %></div>
+                                <div class="text-xs">止: <%= course.endTime %></div>
+                                <div class="text-xs font-bold"><%= course.weekDay %></div>
+                            </td>
+                            <td class="px-4 py-2">HK$<%= course.price %></td>
+                            <td class="px-4 py-2">
+                                <a href="/admin/course/delete/<%= course._id %>" onclick="return confirm('确定要删除吗？')" class="text-red-600 hover:text-red-900 font-bold">删除</a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册管理员 - 屯门妇联课程后台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex justify-center items-center">
+    
+    <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-800">注册新管理员</h2>
+            <p class="text-gray-500 text-sm mt-2">创建账号以管理课程内容</p>
+        </div>
+
+        <form action="/admin/reg" method="POST">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                    用户名
+                </label>
+                <input 
+                    type="text" 
+                    id="username"
+                    name="username" 
+                    class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500" 
+                    placeholder="请输入用户名"
+                    required
+                >
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                    密码
+                </label>
+                <input 
+                    type="password" 
+                    id="password"
+                    name="password" 
+                    class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500" 
+                    placeholder="请输入密码"
+                    required
+                >
+            </div>
+            
+            <button 
+                type="submit" 
+                class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition duration-200 shadow-md"
+            >
+                注册账号
+            </button>
+        </form>
+        
+        <div class="mt-6 text-center border-t pt-4">
+            <p class="text-sm text-gray-600">已有账号？</p>
+            <a href="/admin/login" class="text-sm text-blue-600 font-bold hover:text-blue-800 hover:underline">
+                返回登录
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
