@@ -168,4 +168,76 @@ router.delete('/category/delete/:id', checkLogin, async (req, res) => {
     }
 });
 
+// --- ✅ 新增重点 1: 进入编辑页面 ---
+router.get('/course/edit/:id', checkLogin, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const course = await CourseModel.findById(id);
+        const categories = await CategoryModel.find(); // 获取分类供下拉框使用
+        
+        if (!course) {
+            return res.render('error', { message: '课程不存在', error: {} });
+        }
+
+        res.render('admin/edit', { 
+            course, 
+            categories,
+            user: req.session.username 
+        });
+    } catch (err) {
+        res.render('error', { message: '获取课程失败', error: err });
+    }
+});
+
+// --- ✅ 新增重点 2: 提交更新逻辑 ---
+router.post('/course/update', checkLogin, upload.single('image'), async (req, res) => {
+    try {
+        let { id, title, price, startTime, endTime, weekDay, description, category } = req.body;
+
+        // 1. 处理数组字段 (同添加逻辑)
+        if (weekDay) {
+            weekDay = weekDay.split(',').filter(item => item.trim() !== '');
+        } else {
+            weekDay = [];
+        }
+
+        if (category) {
+            category = category.split(',').filter(item => item.trim() !== '');
+        } else {
+            category = [];
+        }
+
+        // 2. 准备更新的数据对象
+        const updateData = {
+            title,
+            price,
+            startTime,
+            endTime,
+            weekDay,
+            description,
+            category
+        };
+
+        // 3. 处理图片逻辑
+        // 如果 req.file 存在，说明用户上传了新图，使用新路径
+        // 如果 req.file 不存在，说明用户没改图片，不做处理(保留原图)
+        if (req.file) {
+            updateData.image = `/uploads/${req.file.filename}`;
+            
+            // (可选优化) 这里可以顺便把旧图片删掉，避免垃圾文件堆积
+            // const oldCourse = await CourseModel.findById(id);
+            // fs.unlink(...)
+        }
+
+        // 4. 执行更新
+        await CourseModel.updateOne({ _id: id }, updateData);
+
+        res.redirect('/admin/dashboard');
+
+    } catch (err) {
+        console.error(err);
+        res.render('error', { message: '更新失败', error: err });
+    }
+});
+
 module.exports = router;

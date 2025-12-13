@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>修改课程 - 后台管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .multi-select-wrapper { position: relative; }
+        .multi-display-box {
+            min-height: 42px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            background: white;
+        }
+        .tag-chip {
+            background-color: #e0e7ff; color: #3730a3; padding: 2px 8px;
+            border-radius: 9999px; font-size: 0.75rem; font-weight: 600;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .tag-remove { cursor: pointer; }
+        .dropdown-menu {
+            display: none; position: absolute; z-index: 50; width: 100%;
+            max-height: 240px; overflow-y: auto; background: white;
+            border: 1px solid #e5e7eb; border-radius: 0.375rem; margin-top: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .dropdown-menu.show { display: block; }
+        .dropdown-item {
+            padding: 8px 12px; cursor: pointer; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .dropdown-item:hover { background-color: #f3f4f6; }
+        .dropdown-item.selected { background-color: #eff6ff; color: #2563eb; }
+        .dropdown-item.selected::after { content: '✔'; font-size: 12px; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    
+    <div class="max-w-3xl mx-auto p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">修改课程信息</h2>
+            <a href="/admin/dashboard" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i> 取消并返回
+            </a>
+        </div>
+
+        <div class="bg-white p-8 rounded shadow-lg">
+            <form action="/admin/course/update" method="POST" enctype="multipart/form-data" class="space-y-6">
+                
+                <input type="hidden" name="id" value="<%= course._id %>">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">课程名称</label>
+                    <input type="text" name="title" value="<%= course.title %>" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-200 outline-none" required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">价格 (HK$)</label>
+                        <input type="number" name="price" value="<%= course.price %>" class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-200 outline-none" required>
+                    </div>
+                    
+                    <div class="multi-select-wrapper" id="category-select">
+                        <label class="block text-sm font-medium text-gray-700">分类标签</label>
+                        <input type="hidden" name="category" id="category-input">
+                        <div class="multi-display-box border rounded p-2" onclick="toggleDropdown('category-select')">
+                            </div>
+                        <div class="dropdown-menu">
+                            <div id="category-options-container"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">开课时间</label>
+                        <input type="date" name="startTime" value="<%= course.startTime %>" class="w-full border rounded p-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">结课时间</label>
+                        <input type="date" name="endTime" value="<%= course.endTime %>" class="w-full border rounded p-2" required>
+                    </div>
+                </div>
+
+                <div class="multi-select-wrapper" id="weekday-select">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">上课时间</label>
+                    <input type="hidden" name="weekDay" id="weekday-input">
+                    <div class="multi-display-box border rounded p-2" onclick="toggleDropdown('weekday-select')">
+                        </div>
+                    <div class="dropdown-menu">
+                        <div id="weekday-options-container"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">课程简介</label>
+                    <textarea name="description" rows="4" class="w-full border rounded p-2"><%= course.description %></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">当前封面</label>
+                        <img src="<%= course.image %>" class="w-full h-32 object-cover rounded border bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">更换封面 (可选)</label>
+                        <input type="file" name="image" accept="image/*" class="w-full border rounded p-2 bg-gray-50 text-sm">
+                        <p class="text-xs text-gray-400 mt-1">如不修改请留空</p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t flex justify-end gap-4">
+                    <a href="/admin/dashboard" class="px-6 py-2 border rounded text-gray-600 hover:bg-gray-100">取消</a>
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold shadow-md">
+                        保存修改
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 1. 初始化数据 (关键：获取当前课程已选的标签)
+        let categories = <%- JSON.stringify(categories) %>;
+        let currentCourse = <%- JSON.stringify(course) %>; // 获取当前课程对象
+
+        const weekDays = ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'];
+
+        // 2. 初始化状态 (将课程已有的数据填入 selected)
+        const state = {
+            'category-select': { 
+                selected: currentCourse.category || [], // 回显分类
+                options: categories, 
+                type: 'category' 
+            },
+            'weekday-select': { 
+                selected: currentCourse.weekDay || [], // 回显星期
+                options: weekDays.map(d => ({ name: d })), 
+                type: 'weekday' 
+            }
+        };
+
+        // 3. 立即渲染一次
+        renderOptions('category-select');
+        renderOptions('weekday-select');
+
+        // --- 以下函数与 dashboard.ejs 完全一致 (可以直接复用) ---
+
+        function renderOptions(wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            const container = wrapper.querySelector(state[wrapperId].type === 'category' ? '#category-options-container' : '#weekday-options-container');
+            container.innerHTML = '';
+
+            const currentData = state[wrapperId];
+
+            currentData.options.forEach(opt => {
+                const isSelected = currentData.selected.includes(opt.name);
+                const div = document.createElement('div');
+                div.className = `dropdown-item ${isSelected ? 'selected' : ''}`;
+                div.onclick = (e) => toggleSelection(e, wrapperId, opt.name);
+                div.innerHTML = `<span>${opt.name}</span>`;
+                container.appendChild(div);
+            });
+
+            updateDisplay(wrapperId);
+        }
+
+        function toggleSelection(e, wrapperId, value) {
+            if(e) e.stopPropagation();
+            const current = state[wrapperId].selected;
+            const index = current.indexOf(value);
+            if (index > -1) current.splice(index, 1);
+            else current.push(value);
+            renderOptions(wrapperId);
+        }
+
+        function updateDisplay(wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            const displayBox = wrapper.querySelector('.multi-display-box');
+            const input = wrapper.querySelector('input[type="hidden"]');
+            
+            input.value = state[wrapperId].selected.join(','); // 更新隐藏 Input
+
+            displayBox.innerHTML = '';
+            if (state[wrapperId].selected.length === 0) {
+                displayBox.innerHTML = '<span class="text-gray-400 text-sm ml-1">请选择...</span>';
+            } else {
+                state[wrapperId].selected.forEach(val => {
+                    const tag = document.createElement('span');
+                    tag.className = 'tag-chip';
+                    tag.innerHTML = `${val} <span class="tag-remove" onclick="removeTag(event, '${wrapperId}', '${val}')">&times;</span>`;
+                    displayBox.appendChild(tag);
+                });
+            }
+        }
+
+        function removeTag(e, wrapperId, value) {
+            e.stopPropagation();
+            toggleSelection(null, wrapperId, value);
+        }
+
+        function toggleDropdown(wrapperId) {
+            const menu = document.querySelector(`#${wrapperId} .dropdown-menu`);
+            const allMenus = document.querySelectorAll('.dropdown-menu');
+            allMenus.forEach(m => { if (m !== menu) m.classList.remove('show'); });
+            menu.classList.toggle('show');
+        }
+
+        document.addEventListener('click', function(e) {
+            const wrappers = document.querySelectorAll('.multi-select-wrapper');
+            wrappers.forEach(wrapper => {
+                if (!wrapper.contains(e.target)) {
+                    wrapper.querySelector('.dropdown-menu').classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
