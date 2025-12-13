@@ -53,6 +53,19 @@ app.use(
   })
 );
 
+const i18n = require('i18n'); // 1. 引入 i18n
+
+var app = express();
+
+// 2. 配置 i18n (放在 app = express() 之后，路由注册之前)
+i18n.configure({
+  locales: ['zh-CN', 'zh-TW', 'en'], // 支持的语言列表
+  directory: path.join(__dirname, 'locales'), // 翻译文件目录
+  defaultLocale: 'zh-CN', // 默认语言
+  cookie: 'lang', // 使用名为 'lang' 的 cookie 存储用户语言选择
+  objectNotation: true, // 支持嵌套 json
+});
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -61,6 +74,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(i18n.init);
 // 静态资源目录 (存放 css, js, uploads 图片等)
 app.use(express.static(path.join(__dirname, "public")));
 

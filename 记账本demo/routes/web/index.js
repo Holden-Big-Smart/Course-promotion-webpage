@@ -56,4 +56,17 @@ router.get("/course/:id", async (req, res) => {
   }
 });
 
+// --- ✅ 新增：切换语言路由 ---
+router.get('/lang/:locale', (req, res) => {
+    const locale = req.params.locale;
+    const supportedLocales = ['zh-CN', 'zh-TW', 'en'];
+
+    if (supportedLocales.includes(locale)) {
+        // 设置 cookie，有效期 30 天
+        res.cookie('lang', locale, { maxAge: 900000, httpOnly: true });
+    }
+    // 返回用户之前的页面 (Referer)，如果获取不到则回首页
+    res.redirect(req.get('referer') || '/');
+});
+
 module.exports = router;

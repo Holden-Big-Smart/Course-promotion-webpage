@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,21 +10,51 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
+
 <body class="bg-gray-50 flex flex-col min-h-screen">
 
-    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
+
                 <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='/'">
-                    <img class="h-10 w-auto" src="https://xmauez-hk.myshopify.com/cdn/shop/files/logo.png?height=36&v=1764654657" alt="Logo" />
-                    <span class="ml-3 font-bold text-gray-800 text-lg hidden md:block">屯门妇联</span>
+                    <img class="h-10 w-auto"
+                        src="https://xmauez-hk.myshopify.com/cdn/shop/files/logo.png?height=36&v=1764654657"
+                        alt="Logo" />
                 </div>
 
                 <div id="react_search_root" class="flex-1 max-w-lg mx-4 md:mx-8"></div>
 
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition">关于我们</a>
-                    <a href="/contact" class="text-gray-700 hover:text-blue-600 font-medium transition">联系我们</a>
+                <div class="hidden md:flex items-center gap-6">
+
+                    <div class="flex space-x-6 text-sm font-medium">
+                        <a href="/" class="text-gray-700 hover:text-blue-600 transition">
+                            <%= __('nav_home') %>
+                        </a>
+                        <a href="/about" class="text-gray-700 hover:text-blue-600 transition">
+                            <%= __('nav_about') %>
+                        </a>
+                        <a href="/contact" class="text-gray-700 hover:text-blue-600 transition">
+                            <%= __('nav_contact') %>
+                        </a>
+                    </div>
+
+                    <div class="h-4 w-px bg-gray-300"></div>
+
+                    <div class="flex items-center gap-2 text-xs font-bold text-gray-600">
+                        <a href="/lang/zh-CN"
+                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-CN' ? 'bg-gray-100 text-black' : '' %>">
+                            简
+                        </a>
+                        <a href="/lang/zh-TW"
+                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-TW' ? 'bg-gray-100 text-black' : '' %>">
+                            繁
+                        </a>
+                        <a href="/lang/en"
+                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'en' ? 'bg-gray-100 text-black' : '' %>">
+                            En
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -31,7 +62,9 @@
 
     <div class="relative bg-gray-900 text-white">
         <div class="absolute inset-0">
-            <img class="w-full h-full object-cover opacity-60" src="https://xmauez-hk.myshopify.com/cdn/shop/files/97128d96a1a4b8ba1f765bf30134f529.jpg?v=1764653623&width=1600" alt="Banner">
+            <img class="w-full h-full object-cover opacity-60"
+                src="https://xmauez-hk.myshopify.com/cdn/shop/files/97128d96a1a4b8ba1f765bf30134f529.jpg?v=1764653623&width=1600"
+                alt="Banner">
         </div>
         <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl drop-shadow-lg">
@@ -48,32 +81,36 @@
             <div class="flex justify-between items-end mb-8">
                 <h2 class="text-3xl font-bold tracking-tight text-gray-900">热门课程</h2>
             </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8">
-                
-                <% if (courses.length === 0) { %>
-                    <p class="text-gray-500 col-span-4 text-center py-10">暂无课程数据，请先访问 /seed 初始化数据。</p>
-                <% } %>
 
-                <% courses.forEach(function(item) { %>
-                <div class="group relative bg-white border border-gray-100 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-                    <div class="w-full h-64 bg-gray-100 aspect-w-1 aspect-h-1 overflow-hidden group-hover:opacity-90">
-                        <img src="<%= item.image %>" loading="lazy" alt="<%= item.title %>" class="w-full h-full object-center object-contain p-4 group-hover:scale-105 transition-transform duration-300">
-                    </div>
-                    
-                    <div class="p-4 text-center">
-                        <h3 class="text-lg font-medium text-gray-900 mb-1">
-                            <a href="/course/<%= item._id %>">
-                                <span aria-hidden="true" class="absolute inset-0"></span>
-                                <%= item.title %>
-                            </a>
-                        </h3>
-                        <div class="mt-2 flex justify-center items-center gap-3">
-                            <p class="text-xl font-bold text-red-600">HK$<%= item.price %></p>
-                        </div>
-                    </div>
-                </div>
-                <% }); %>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8">
+
+                <% if (courses.length===0) { %>
+                    <p class="text-gray-500 col-span-4 text-center py-10">暂无课程数据，请先访问 /seed 初始化数据。</p>
+                    <% } %>
+
+                        <% courses.forEach(function(item) { %>
+                            <div
+                                class="group relative bg-white border border-gray-100 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                                <div
+                                    class="w-full h-64 bg-gray-100 aspect-w-1 aspect-h-1 overflow-hidden group-hover:opacity-90">
+                                    <img src="<%= item.image %>" loading="lazy" alt="<%= item.title %>"
+                                        class="w-full h-full object-center object-contain p-4 group-hover:scale-105 transition-transform duration-300">
+                                </div>
+
+                                <div class="p-4 text-center">
+                                    <h3 class="text-lg font-medium text-gray-900 mb-1">
+                                        <a href="/course/<%= item._id %>">
+                                            <span aria-hidden="true" class="absolute inset-0"></span>
+                                            <%= item.title %>
+                                        </a>
+                                    </h3>
+                                    <div class="mt-2 flex justify-center items-center gap-3">
+                                        <p class="text-xl font-bold text-red-600">HK$<%= item.price %>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
 
             </div>
         </div>
@@ -99,7 +136,7 @@
             const handleSearch = async (e) => {
                 const val = e.target.value;
                 setQuery(val);
-                
+
                 if (val.trim().length > 0) {
                     try {
                         // 请求后端 API
@@ -119,14 +156,14 @@
             };
 
             // 点击外部关闭下拉框 (简化版：鼠标离开区域关闭，或者点击链接关闭)
-            
+
             return (
                 <div className="relative w-full">
                     <div className="relative">
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             className="w-full bg-gray-100 border-transparent focus:bg-white border focus:border-blue-500 rounded-md py-2 px-4 pl-10 focus:outline-none transition-colors"
-                            placeholder="搜索课程 (例如: 钢琴)..."
+                            placeholder="<%= __('search_placeholder') %>"
                             value={query}
                             onChange={handleSearch}
                             onFocus={() => query && setShowResults(true)}
@@ -143,9 +180,9 @@
                     {showResults && results.length > 0 && (
                         <div className="absolute top-full left-0 w-full bg-white shadow-xl rounded-b-md mt-1 z-50 border border-gray-100 max-h-80 overflow-y-auto">
                             {results.map(course => (
-                                <a 
-                                    key={course._id} 
-                                    href={`/course/${course._id}`} 
+                                <a
+                                    key={course._id}
+                                    href={`/course/${course._id}`}
                                     className="block px-4 py-3 hover:bg-gray-50 border-b border-gray-50 flex items-center transition"
                                 >
                                     <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
@@ -159,9 +196,9 @@
                             ))}
                         </div>
                     )}
-                    
+
                     {showResults && results.length === 0 && query && (
-                         <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-b-md mt-1 z-50 p-4 text-center text-gray-500 text-sm">
+                        <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-b-md mt-1 z-50 p-4 text-center text-gray-500 text-sm">
                             未找到相关课程
                         </div>
                     )}
@@ -174,4 +211,5 @@
         root.render(<SearchBox />);
     </script>
 </body>
+
 </html>
