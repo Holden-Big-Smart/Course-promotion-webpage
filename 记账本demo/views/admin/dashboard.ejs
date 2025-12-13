@@ -1,366 +1,376 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-CN">
 <head>
-    <title>后台管理面板</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程管理后台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* 多选下拉框样式 */
-        .multi-select-wrapper {
-            position: relative;
-        }
+        /* 自定义滚动条样式 */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+        /* 下拉选择器样式复原 */
+        .multi-select-wrapper { position: relative; }
         .multi-display-box {
             min-height: 42px;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
             display: flex;
             flex-wrap: wrap;
-            align-items: center;
-            gap: 4px;
+            gap: 0.5rem;
             cursor: pointer;
-            background: white;
+            background-color: white;
         }
-
         .tag-chip {
-            background-color: #e0e7ff;
-            /* blue-100 */
-            color: #3730a3;
-            /* indigo-800 */
+            background-color: #dbeafe;
+            color: #2563eb;
             padding: 2px 8px;
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 4px;
         }
-
-        .tag-remove {
-            cursor: pointer;
-            hover: text-red-500;
-        }
-
+        .tag-remove { margin-left: 4px; cursor: pointer; color: #1e40af; }
+        .tag-remove:hover { color: #dc2626; }
+        
         .dropdown-menu {
-            display: none;
             position: absolute;
-            z-index: 50;
-            width: 100%;
-            max-height: 240px;
-            overflow-y: auto;
+            top: 100%; left: 0; right: 0;
             background: white;
             border: 1px solid #e5e7eb;
-            border-radius: 0.375rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
             margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 50;
+            display: none; /* 默认隐藏 */
         }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
+        .dropdown-menu.show { display: block; }
         .dropdown-item {
             padding: 8px 12px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f3f4f6;
-        }
-
-        .dropdown-item.selected {
-            background-color: #eff6ff;
-            color: #2563eb;
-        }
-
-        .dropdown-item.selected::after {
-            content: '✔';
-            font-size: 12px;
-        }
-
-        .add-btn-area {
-            border-top: 1px solid #e5e7eb;
-            padding: 8px 12px;
-            color: #6b7280;
-            cursor: pointer;
             font-size: 0.875rem;
         }
-
-        .add-btn-area:hover {
-            background-color: #f9fafb;
-            color: #2563eb;
-        }
+        .dropdown-item:hover { background-color: #f3f4f6; }
+        .dropdown-item.selected { background-color: #eff6ff; color: #2563eb; }
     </style>
 </head>
+<body class="bg-gray-100 font-sans h-screen flex flex-col overflow-hidden">
 
-<body class="bg-gray-50 min-h-screen">
-    <nav class="bg-gray-800 text-white p-4 flex justify-between items-center sticky top-0 z-50">
-        <span class="font-bold text-xl">课程管理后台</span>
-        <div>
-            <span class="mr-4">欢迎, <%= user %></span>
-            <a href="/" target="_blank" class="mr-4 hover:text-gray-300">查看前台</a>
-            <a href="/admin/logout" class="bg-red-500 px-3 py-1 rounded text-sm hover:bg-red-600">退出</a>
+    <nav class="bg-gray-800 text-white shadow-lg h-16 flex-shrink-0 z-20">
+        <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex justify-between items-center">
+            <div class="flex items-center">
+                <span class="text-xl font-bold tracking-wider">课程管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-300">欢迎, <%= user.username %></span>
+                <a href="/" class="text-sm text-gray-300 hover:text-white transition">查看前台</a>
+                <form action="/api/logout" method="POST" class="inline">
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded text-sm transition">退出</button>
+                </form>
+            </div>
         </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="flex-grow p-6 overflow-hidden">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1.25fr_1fr] gap-6 h-full max-w-[1920px] mx-auto">
 
-        <div class="bg-white p-6 rounded shadow h-fit lg:col-span-1">
-            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-green-700">发布新课程</h3>
-
-            <form action="/admin/course/add" method="POST" enctype="multipart/form-data" class="space-y-4">
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">课程名称</label>
-                    <input type="text" name="title"
-                        class="w-full border rounded p-2 focus:ring-2 focus:ring-green-200 outline-none" required>
+            <div class="bg-white rounded-xl shadow-md flex flex-col h-full overflow-hidden">
+                <div class="p-4 border-b border-gray-100 bg-gray-50">
+                    <h2 class="text-lg font-bold text-green-700"><i class="fas fa-plus-circle mr-2"></i>发布新课程</h2>
                 </div>
-
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">价格 (HK$)</label>
-                        <input type="number" name="price"
-                            class="w-full border rounded p-2 focus:ring-2 focus:ring-green-200 outline-none" required>
-                    </div>
-
-                    <div class="multi-select-wrapper" id="category-select">
-                        <label class="block text-sm font-medium text-gray-700">分类标签 (可多选)</label>
-                        <input type="hidden" name="category" id="category-input">
-                        <div class="multi-display-box border rounded p-2" onclick="toggleDropdown('category-select')">
-                            <span class="text-gray-400 text-sm ml-1 placeholder-text">请选择...</span>
+                
+                <div class="p-5 overflow-y-auto custom-scrollbar flex-grow">
+                    <form action="/admin/course/add" method="POST" enctype="multipart/form-data" class="space-y-4">
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">课程名称</label>
+                            <input type="text" name="title" placeholder="请输入课程名称" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none transition" required>
                         </div>
 
-                        <div class="dropdown-menu" id="category-list">
-                            <div id="category-options-container"></div>
-
-                            <div class="add-btn-area flex items-center gap-2" onclick="addNewCategory(event)">
-                                <i class="fas fa-plus"></i>
-                                <span>新建分类标签</span>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">价格 (HK$)</label>
+                                <input type="number" name="price" placeholder="0" class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
+                            </div>
+                            
+                            <div class="multi-select-wrapper" id="category-select">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">分类标签 (可多选)</label>
+                                <div class="multi-display-box" onclick="toggleDropdown('category-select')">
+                                    <span class="text-gray-400 text-sm ml-1 placeholder-text">点击选择...</span>
+                                </div>
+                                <input type="hidden" name="category" value="">
+                                
+                                <div class="dropdown-menu custom-scrollbar">
+                                    <div id="category-options-container">
+                                        </div>
+                                    <div onclick="addNewCategory(event)" class="p-2 text-sm text-green-600 cursor-pointer hover:bg-green-50 border-t border-gray-100 text-center font-bold">
+                                        <i class="fas fa-plus"></i> 新建分类
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">开课时间</label>
+                                <input type="date" name="startTime" class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">结课时间</label>
+                                <input type="date" name="endTime" class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">上课时间</label>
+                            <div class="flex flex-wrap gap-2">
+                                <% ['一','二','三','四','五','六','日'].forEach(day => { %>
+                                    <label class="inline-flex items-center bg-gray-50 border px-0.5 py-1 rounded cursor-pointer hover:bg-gray-100">
+                                        <input type="checkbox" name="weekDay" value="星期<%= day %>" class="form-checkbox h-4 w-4 text-green-600">
+                                        <span class="ml-2 text-sm text-gray-700"><%= day %></span>
+                                    </label>
+                                <% }) %>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">课程简介</label>
+                            <textarea name="description" rows="3" placeholder="课程详细介绍..." class="w-full border border-gray-300 rounded-lg p-2 text-sm"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">课程海报</label>
+                            <input type="file" name="image" id="imageInput" accept="image/*" class="w-full border border-gray-300 rounded-lg p-2 text-sm bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" required>
+                        </div>
+
+                        <button type="submit" class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-green-700 shadow-md transition duration-200 mt-4">
+                            <i class="fas fa-paper-plane mr-2"></i>发布课程
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md flex flex-col h-full overflow-hidden border-2 border-dashed border-gray-200">
+                <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-blue-700"><i class="fas fa-image mr-2"></i>海报预览</h2>
+                    <span class="text-xs text-gray-400">实时显示上传图片</span>
+                </div>
+                
+                <div class="flex-grow flex items-center justify-center bg-gray-100 p-4 relative overflow-hidden group">
+                    <div id="placeholderView" class="text-center text-gray-400">
+                        <i class="fas fa-images text-6xl mb-4"></i>
+                        <p class="text-sm">请在左侧选择图片</p>
                     </div>
+
+                    <img id="previewImg" src="#" alt="Preview" class="hidden max-h-full max-w-full object-contain shadow-2xl rounded-lg transition-transform duration-300 group-hover:scale-105">
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">开课时间</label>
-                        <input type="date" name="startTime" class="w-full border rounded p-2" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">结课时间</label>
-                        <input type="date" name="endTime" class="w-full border rounded p-2" required>
-                    </div>
-                </div>
-
-                <div class="multi-select-wrapper" id="weekday-select">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">上课时间 (可多选)</label>
-                    <input type="hidden" name="weekDay" id="weekday-input">
-
-                    <div class="multi-display-box border rounded p-2" onclick="toggleDropdown('weekday-select')">
-                        <span class="text-gray-400 text-sm ml-1 placeholder-text">请选择...</span>
-                    </div>
-
-                    <div class="dropdown-menu">
-                        <div id="weekday-options-container">
+                <div class="p-4 bg-white border-t border-gray-100">
+                    <div class="flex justify-between items-end">
+                        <div class="w-full">
+                            <h3 id="previewTitle" class="font-bold text-gray-800 text-lg truncate">课程标题预览</h3>
+                            <p id="previewPrice" class="text-red-600 font-bold text-xl mt-1">HK$ --</p>
                         </div>
                     </div>
                 </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">课程简介</label>
-                    <textarea name="description" rows="2" class="w-full border rounded p-2"></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">课程封面图</label>
-                    <input type="file" name="image" accept="image/*" class="w-full border rounded p-2 bg-gray-50"
-                        required>
-                </div>
-
-                <button type="submit"
-                    class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-bold shadow-md transition">发布课程</button>
-            </form>
-        </div>
-
-        <div class="bg-white p-6 rounded shadow lg:col-span-2">
-            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">已发布课程 (<%= courses.length %>)</h3>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-500">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
-                        <tr>
-                            <th class="px-3 py-3">图片</th>
-                            <th class="px-3 py-3">详情</th>
-                            <th class="px-3 py-3 w-20">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% courses.forEach(course=> { %>
-                            <tr class="bg-white border-b hover:bg-gray-50">
-                                <td class="px-3 py-2 w-20">
-                                    <img src="<%= course.image %>" class="w-16 h-12 object-cover rounded border">
-                                </td>
-                                <td class="px-3 py-2">
-                                    <div class="font-bold text-gray-900 text-base">
-                                        <%= course.title %>
-                                    </div>
-                                    <div class="flex flex-wrap gap-1 mt-1">
-                                        <% course.category.forEach(cat=> { %>
-                                            <span
-                                                class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded">
-                                                <%= cat %>
-                                            </span>
-                                            <% }) %>
-                                                <span class="text-red-600 font-bold ml-2">HK$<%= course.price %></span>
-                                    </div>
-                                    <div class="text-xs text-gray-500 mt-1">
-                                        📅 <%= course.startTime %> ~ <%= course.endTime %>
-                                    </div>
-                                    <div class="flex flex-wrap gap-1 mt-1 text-xs text-purple-600 font-medium">
-                                        <% course.weekDay.forEach(day=> { %>
-                                            <span>
-                                                <%= day %>
-                                            </span>
-                                            <% }) %>
-                                    </div>
-                                </td>
-                                <td class="px-3 py-2">
-                                    <div class="flex flex-col gap-2">
-                                        <a href="/admin/course/edit/<%= course._id %>"
-                                            class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs text-center">
-                                            修改
-                                        </a>
-
-                                        <a href="/admin/course/delete/<%= course._id %>"
-                                            onclick="return confirm('确定要删除吗？')"
-                                            class="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-xs text-center">
-                                            删除
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <% }) %>
-                    </tbody>
-                </table>
             </div>
+
+            <div class="bg-white rounded-xl shadow-md flex flex-col h-full overflow-hidden">
+                <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center z-10 sticky top-0">
+                    <h2 class="text-lg font-bold text-gray-800"><i class="fas fa-list-ul mr-2"></i>已发布 (<%= courses.length %>)</h2>
+                </div>
+
+                <div class="flex-grow overflow-y-auto custom-scrollbar p-0">
+                    <% if (courses.length === 0) { %>
+                        <div class="flex flex-col items-center justify-center h-full text-gray-400">
+                            <i class="fas fa-inbox text-4xl mb-2"></i>
+                            <p>暂无课程</p>
+                        </div>
+                    <% } else { %>
+                        <div class="flex flex-col">
+                            <% courses.forEach(course => { %>
+                                <div class="flex p-4 border-b border-gray-100 hover:bg-gray-50 transition items-start group">
+                                    <div class="w-16 h-16 flex-shrink-0 bg-gray-200 rounded-md overflow-hidden mr-4 border border-gray-200">
+                                        <img src="<%= course.image %>" class="w-full h-full object-cover" alt="Course">
+                                    </div>
+                                    
+                                    <div class="flex-grow min-w-0">
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="text-sm font-bold text-gray-900 truncate pr-2"><%= course.title %></h3>
+                                            <div class="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button class="text-blue-500 hover:text-blue-700 p-1"><i class="fas fa-edit"></i></button>
+                                                <a href="/admin/course/delete/<%= course._id %>" onclick="return confirm('确定删除吗？')" class="text-red-500 hover:text-red-700 p-1"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-1 flex flex-wrap gap-2 text-xs">
+                                            <span class="text-red-600 font-bold bg-red-50 px-1.5 py-0.5 rounded">HK$<%= course.price %></span>
+                                            <% if(course.category && course.category.length){ %>
+                                                <% course.category.forEach(cat => { %>
+                                                    <span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded"><%= cat %></span>
+                                                <% }) %>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
         // ==========================================
-        // 1. 数据初始化 (安全模式)
+        // 1. 数据初始化
         // ==========================================
-
-        // ⚠️ 修复核心：如果 categories 为空/未定义，强制赋值为 "[]" (空数组字符串)
-        // 这样生成的代码就是 var serverCategories = []; 不会报错
+        // 注意：这里需要后端传 categories 数组，格式如 [{_id:1, name:'艺术'}, ...]
+        // 如果后端还没传，这里给个空数组防止报错
         var serverCategories = <%- (typeof categories !== 'undefined' && categories) ? JSON.stringify(categories) : "[]" %>;
-
-        var weekDaysData = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
-
-        // 定义全局状态
+        
         var state = {
-            'category-select': { selected: [], options: serverCategories, type: 'category' },
-            'weekday-select': { selected: [], options: weekDaysData.map(function (d) { return { name: d }; }), type: 'weekday' }
+            'category-select': { selected: [], options: serverCategories }
         };
 
         // ==========================================
-        // 2. 全局函数定义 (修复 ReferenceError)
+        // 2. 预览 & 基础逻辑
         // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // 渲染初始选项
+            renderOptions('category-select');
 
-        // 渲染下拉选项
+            // 图片预览逻辑
+            const imageInput = document.getElementById('imageInput');
+            const previewImg = document.getElementById('previewImg');
+            const placeholderView = document.getElementById('placeholderView');
+            const titleInput = document.querySelector('input[name="title"]');
+            const priceInput = document.querySelector('input[name="price"]');
+            const previewTitle = document.getElementById('previewTitle');
+            const previewPrice = document.getElementById('previewPrice');
+
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        previewImg.classList.remove('hidden');
+                        placeholderView.classList.add('hidden');
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    previewImg.src = '#';
+                    previewImg.classList.add('hidden');
+                    placeholderView.classList.remove('hidden');
+                }
+            });
+
+            titleInput.addEventListener('input', function(e) {
+                previewTitle.textContent = e.target.value || '课程标题预览';
+            });
+
+            priceInput.addEventListener('input', function(e) {
+                previewPrice.textContent = 'HK$' + (e.target.value || '--');
+            });
+
+            // 点击外部关闭下拉菜单
+            document.addEventListener('click', function (e) {
+                var wrapper = document.getElementById('category-select');
+                if (!wrapper.contains(e.target)) {
+                    var menu = wrapper.querySelector('.dropdown-menu');
+                    if (menu) menu.classList.remove('show');
+                }
+            });
+        });
+
+        // ==========================================
+        // 3. 分类标签下拉框逻辑
+        // ==========================================
+        
         function renderOptions(wrapperId) {
             var wrapper = document.getElementById(wrapperId);
-            if (!wrapper) return;
-
-            // 动态查找容器 ID
-            var containerId = state[wrapperId].type === 'category' ? 'category-options-container' : 'weekday-options-container';
-            var container = document.getElementById(containerId);
-
+            var container = document.getElementById('category-options-container');
             if (!container) return;
 
             container.innerHTML = '';
             var currentData = state[wrapperId];
 
-            // 渲染列表项
             currentData.options.forEach(function (opt) {
                 var isSelected = currentData.selected.includes(opt.name);
                 var div = document.createElement('div');
                 div.className = 'dropdown-item ' + (isSelected ? 'selected' : '');
-
-                // 绑定点击事件 (选择/取消)
+                // 绑定点击事件：选中/取消
                 div.onclick = function (e) { toggleSelection(e, wrapperId, opt.name); };
-
+                
+                // 选项内容：名字 + 删除按钮(删除数据库中的分类)
                 var content = '<span>' + opt.name + '</span>';
-
-                // 如果是分类，添加删除小图标
-                if (currentData.type === 'category') {
-                    // 注意：这里使用了转义字符 \ 来处理引号
-                    content += '<i onclick="deleteCategory(event, \'' + opt._id + '\', \'' + opt.name + '\')" class="fas fa-trash-alt text-gray-300 hover:text-red-500 transition px-2"></i>';
-                }
+                content += '<i onclick="deleteCategory(event, \'' + opt._id + '\', \'' + opt.name + '\')" class="fas fa-trash-alt text-gray-300 hover:text-red-500 transition px-2"></i>';
+                
                 div.innerHTML = content;
                 container.appendChild(div);
             });
-
+            
             updateDisplay(wrapperId);
         }
 
-        // 切换选中状态逻辑
         function toggleSelection(e, wrapperId, value) {
             if (e) e.stopPropagation();
             var current = state[wrapperId].selected;
             var index = current.indexOf(value);
 
-            if (index > -1) current.splice(index, 1); // 已存在则移除
+            if (index > -1) current.splice(index, 1); // 存在则移除
             else current.push(value); // 不存在则添加
 
             renderOptions(wrapperId);
         }
 
-        // 更新输入框显示 (蓝色胶囊标签)
         function updateDisplay(wrapperId) {
             var wrapper = document.getElementById(wrapperId);
             var displayBox = wrapper.querySelector('.multi-display-box');
             var input = wrapper.querySelector('input[type="hidden"]');
 
-            // 更新隐藏 input 的值 (逗号分隔)，用于表单提交
+            // 更新隐藏input的值，用逗号分隔，传给后端
             input.value = state[wrapperId].selected.join(',');
 
             displayBox.innerHTML = '';
             if (state[wrapperId].selected.length === 0) {
-                displayBox.innerHTML = '<span class="text-gray-400 text-sm ml-1 placeholder-text">请选择...</span>';
+                displayBox.innerHTML = '<span class="text-gray-400 text-sm ml-1 placeholder-text">点击选择...</span>';
             } else {
                 state[wrapperId].selected.forEach(function (val) {
                     var tag = document.createElement('span');
                     tag.className = 'tag-chip';
-                    // 标签上的 X 按钮
                     tag.innerHTML = val + ' <span class="tag-remove" onclick="removeTag(event, \'' + wrapperId + '\', \'' + val + '\')">&times;</span>';
                     displayBox.appendChild(tag);
                 });
             }
         }
 
-        // 移除单个标签
         function removeTag(e, wrapperId, value) {
             e.stopPropagation();
             toggleSelection(null, wrapperId, value);
         }
 
-        // 打开/关闭下拉菜单 (HTML onclick 入口)
         function toggleDropdown(wrapperId) {
             var wrapper = document.getElementById(wrapperId);
             var menu = wrapper.querySelector('.dropdown-menu');
-
-            // 先关闭其他所有已打开的菜单
-            document.querySelectorAll('.dropdown-menu').forEach(function (m) {
-                if (m !== menu) m.classList.remove('show');
-            });
-
-            // 切换当前菜单
             menu.classList.toggle('show');
         }
 
-        // 添加新分类 (AJAX)
+        // 添加新分类 (API交互)
         async function addNewCategory(e) {
             e.stopPropagation();
             var name = prompt("请输入新分类标签名称:");
@@ -375,6 +385,7 @@
                 var json = await res.json();
 
                 if (json.status === 'ok') {
+                    // 添加成功后，加入本地列表并自动选中
                     state['category-select'].options.push(json.data);
                     state['category-select'].selected.push(json.data.name);
                     renderOptions('category-select');
@@ -383,11 +394,15 @@
                 }
             } catch (err) {
                 console.error(err);
-                alert('网络错误');
+                // 暂时模拟添加 (如果API还没通)
+                // var mockId = Date.now().toString();
+                // state['category-select'].options.push({_id: mockId, name: name});
+                // state['category-select'].selected.push(name);
+                // renderOptions('category-select');
             }
         }
 
-        // 删除分类 (AJAX)
+        // 删除分类 (API交互)
         async function deleteCategory(e, id, name) {
             e.stopPropagation();
             if (!confirm('确定要删除标签【' + name + '】吗？')) return;
@@ -395,9 +410,7 @@
                 var res = await fetch('/admin/category/delete/' + id, { method: 'DELETE' });
                 var json = await res.json();
                 if (json.status === 'ok') {
-                    // 从选项中移除
                     state['category-select'].options = state['category-select'].options.filter(function (c) { return c._id !== id; });
-                    // 如果已选中，也移除
                     state['category-select'].selected = state['category-select'].selected.filter(function (s) { return s !== name; });
                     renderOptions('category-select');
                 } else {
@@ -407,29 +420,6 @@
                 alert('网络错误');
             }
         }
-
-        // ==========================================
-        // 3. 初始化执行
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log("初始化组件...");
-
-            // 渲染初始状态
-            renderOptions('category-select');
-            renderOptions('weekday-select');
-
-            // 点击页面空白处关闭下拉菜单
-            document.addEventListener('click', function (e) {
-                var wrappers = document.querySelectorAll('.multi-select-wrapper');
-                wrappers.forEach(function (wrapper) {
-                    if (!wrapper.contains(e.target)) {
-                        var menu = wrapper.querySelector('.dropdown-menu');
-                        if (menu) menu.classList.remove('show');
-                    }
-                });
-            });
-        });
     </script>
 </body>
-
 </html>
