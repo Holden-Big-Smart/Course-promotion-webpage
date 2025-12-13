@@ -5,7 +5,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <nav class="bg-gray-800 text-white p-4 flex justify-between items-center">
+    <nav class="bg-gray-800 text-white p-4 flex justify-between items-center sticky top-0 z-50">
         <span class="font-bold text-xl">课程管理后台</span>
         <div>
             <span class="mr-4">欢迎, <%= user %></span>
@@ -14,10 +14,32 @@
         </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
         
-        <div class="bg-white p-6 rounded shadow lg:col-span-1 h-fit">
-            <h3 class="text-xl font-bold mb-4 border-b pb-2">发布新课程</h3>
+        <div class="bg-white p-6 rounded shadow h-fit lg:col-span-1">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-purple-700">1. 分类标签管理</h3>
+            
+            <form action="/admin/category/add" method="POST" class="mb-6 flex gap-2">
+                <input type="text" name="name" placeholder="新标签(如:美术)" class="w-full border rounded p-2 text-sm" required>
+                <button type="submit" class="bg-purple-600 text-white px-3 rounded hover:bg-purple-700 text-sm">添加</button>
+            </form>
+
+            <ul class="space-y-2 max-h-60 overflow-y-auto">
+                <% if(categories.length === 0) { %>
+                    <li class="text-gray-400 text-sm">暂无分类，请添加</li>
+                <% } %>
+
+                <% categories.forEach(cat => { %>
+                <li class="flex justify-between items-center bg-gray-50 p-2 rounded border">
+                    <span class="text-gray-700"><%= cat.name %></span>
+                    <a href="/admin/category/delete/<%= cat._id %>" class="text-red-500 hover:text-red-700 text-xs font-bold">X</a>
+                </li>
+                <% }) %>
+            </ul>
+        </div>
+
+        <div class="bg-white p-6 rounded shadow h-fit lg:col-span-1">
+            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-green-700">2. 发布新课程</h3>
             <form action="/admin/course/add" method="POST" enctype="multipart/form-data" class="space-y-4">
                 
                 <div>
@@ -32,12 +54,15 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium">分类标签</label>
-                        <select name="category" class="w-full border rounded p-2">
-                            <option value="全部">全部</option>
-                            <option value="儿童">儿童</option>
-                            <option value="成人">成人</option>
-                            <option value="长者">长者</option>
+                        <select name="category" class="w-full border rounded p-2" required>
+                            <option value="" disabled selected>请选择...</option>
+                            <% categories.forEach(cat => { %>
+                                <option value="<%= cat.name %>"><%= cat.name %></option>
+                            <% }) %>
                         </select>
+                        <% if(categories.length === 0) { %>
+                           <p class="text-xs text-red-500 mt-1">请先在左侧添加分类!</p>
+                        <% } %>
                     </div>
                 </div>
 
@@ -53,55 +78,79 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium">星期标签</label>
-                    <input type="text" name="weekDay" placeholder="例如: 逢星期六 / 每周三五" class="w-full border rounded p-2" required>
+                    <label class="block text-sm font-medium mb-2">上课时间 (可多选)</label>
+                    <div class="grid grid-cols-2 gap-y-2 gap-x-1 text-sm">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="weekDay" value="星期一" class="text-green-600 rounded"><span>星期一</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="weekDay" value="星期二" class="text-green-600 rounded"><span>星期二</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="weekDay" value="星期三" class="text-green-600 rounded"><span>星期三</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="weekDay" value="星期四" class="text-green-600 rounded"><span>星期四</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="weekDay" value="星期五" class="text-green-600 rounded"><span>星期五</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="weekDay" value="星期六" class="text-green-600 rounded"><span>星期六</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" name="weekDay" value="星期日" class="text-green-600 rounded"><span>星期日</span>
+                        </label>
+                    </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium">课程简介</label>
-                    <textarea name="description" rows="3" class="w-full border rounded p-2"></textarea>
+                    <textarea name="description" rows="2" class="w-full border rounded p-2"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium">课程封面图 (存入 public/uploads)</label>
+                    <label class="block text-sm font-medium">课程封面图</label>
                     <input type="file" name="image" accept="image/*" class="w-full border rounded p-2 bg-gray-50" required>
                 </div>
 
-                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-bold">立即发布</button>
+                <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-bold shadow-md">发布课程</button>
             </form>
         </div>
 
         <div class="bg-white p-6 rounded shadow lg:col-span-2">
-            <h3 class="text-xl font-bold mb-4 border-b pb-2">已发布课程列表 (<%= courses.length %>)</h3>
+            <h3 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">3. 已发布课程 (<%= courses.length %>)</h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                         <tr>
-                            <th class="px-4 py-3">图片</th>
-                            <th class="px-4 py-3">名称</th>
-                            <th class="px-4 py-3">时间/星期</th>
-                            <th class="px-4 py-3">价格</th>
-                            <th class="px-4 py-3">操作</th>
+                            <th class="px-3 py-3">图片</th>
+                            <th class="px-3 py-3">详情</th>
+                            <th class="px-3 py-3 w-20">操作</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% courses.forEach(course => { %>
                         <tr class="bg-white border-b hover:bg-gray-50">
-                            <td class="px-4 py-2">
-                                <img src="<%= course.image %>" class="w-12 h-12 object-cover rounded">
+                            <td class="px-3 py-2 w-20">
+                                <img src="<%= course.image %>" class="w-16 h-12 object-cover rounded border">
                             </td>
-                            <td class="px-4 py-2 font-medium text-gray-900">
-                                <%= course.title %>
-                                <span class="block text-xs text-blue-500"><%= course.category %></span>
+                            <td class="px-3 py-2">
+                                <div class="font-bold text-gray-900 text-base"><%= course.title %></div>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-0.5 rounded">
+                                        <%= course.category %>
+                                    </span>
+                                    <span class="text-red-600 font-bold">HK$<%= course.price %></span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    📅 <%= course.startTime %> 至 <%= course.endTime %> | <%= course.weekDay %>
+                                </div>
                             </td>
-                            <td class="px-4 py-2">
-                                <div class="text-xs">起: <%= course.startTime %></div>
-                                <div class="text-xs">止: <%= course.endTime %></div>
-                                <div class="text-xs font-bold"><%= course.weekDay %></div>
-                            </td>
-                            <td class="px-4 py-2">HK$<%= course.price %></td>
-                            <td class="px-4 py-2">
-                                <a href="/admin/course/delete/<%= course._id %>" onclick="return confirm('确定要删除吗？')" class="text-red-600 hover:text-red-900 font-bold">删除</a>
+                            <td class="px-3 py-2">
+                                <a href="/admin/course/delete/<%= course._id %>" onclick="return confirm('确定要删除课程：<%= course.title %> 吗？')" class="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-xs">
+                                    删除
+                                </a>
                             </td>
                         </tr>
                         <% }) %>
