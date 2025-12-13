@@ -66,7 +66,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
 
             <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 h-full">
-                <h2 class="text-2xl font-bold text-gray-900 mb-8 border-b pb-4">联系方式</h2>
+                <h2 class="text-2xl font-bold text-gray-900 mb-8 border-b pb-4"><%= __('联系方式') %></h2>
 
                 <div class="space-y-8">
                     <div class="flex items-center">
@@ -75,7 +75,7 @@
                             <i class="fas fa-phone-alt"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">致电我们</p>
+                            <p class="text-sm font-medium text-gray-500"><%= __('致电我们') %></p>
                             <a href="tel:+85224673867"
                                 class="text-lg font-bold text-gray-900 hover:text-blue-600 transition">
                                 +852 2467 3867
@@ -89,7 +89,7 @@
                             <i class="fas fa-globe"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">官方网站</p>
+                            <p class="text-sm font-medium text-gray-500"><%= __('官方网站') %></p>
                             <a href="http://www.tm-women.org.hk/tc/" target="_blank"
                                 class="text-lg font-bold text-gray-900 hover:text-blue-600 transition break-all">
                                 www.tm-women.org.hk
@@ -103,10 +103,11 @@
                             <i class="fab fa-facebook-f"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Facebook 专页</p>
+                            <p class="text-sm font-medium text-gray-500"><%= __('Facebook 专页') %></p>
                             <a href="https://www.facebook.com/tmdwa/" target="_blank"
                                 class="text-lg font-bold text-gray-900 hover:text-blue-800 transition">
-                                屯門婦聯 Tuen Mun District Women's Association
+                                屯門婦聯 <br>
+                                Tuen Mun District Women's Association
                             </a>
                         </div>
                     </div>
@@ -117,10 +118,10 @@
                             <i class="fab fa-youtube"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">YouTube 频道</p>
+                            <p class="text-sm font-medium text-gray-500"><%= __('YouTube 频道') %></p>
                             <a href="https://www.youtube.com/@%E5%B1%AF%E9%96%80%E5%A9%A6%E8%81%AF%E7%9B%B4%E6%92%AD%E5%B9%B3%E5%8F%B0"
                                 target="_blank" class="text-lg font-bold text-gray-900 hover:text-red-600 transition">
-                                屯門婦聯直播平台
+                                <%= __('屯门妇联直播平台') %>
                             </a>
                         </div>
                     </div>
@@ -133,7 +134,7 @@
                     class="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full opacity-30 blur-2xl -mr-10 -mt-10">
                 </div>
 
-                <h3 class="text-2xl font-bold text-gray-900 mb-6">WhatsApp 线上咨询</h3>
+                <h3 class="text-2xl font-bold text-gray-900 mb-6"><%= __('WhatsApp 线上咨询') %></h3>
 
 
                 <img src="/images/whatsapp-chat-btn.png" alt="点击跳转 WhatsApp"
@@ -144,7 +145,7 @@
 
                 <a href="https://wa.me/85224673867" target="_blank"
                     class="inline-flex items-center px-8 py-3 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition transform hover:scale-105">
-                    <i class="fab fa-whatsapp mr-2 text-xl"></i> 立即对话
+                    <i class="fab fa-whatsapp mr-2 text-xl"></i> <%= __('立即对话') %>
                 </a>
             </div>
 
@@ -153,7 +154,7 @@
         <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 text-center w-full">
             <div class="flex items-center justify-center text-gray-600 text-lg">
                 <i class="far fa-clock text-2xl mr-3 text-gray-400"></i>
-                <span>办公时间：周一至周六 09:00 - 20:00</span>
+                <span><%= __('办公时间') %></span>
             </div>
         </div>
 
@@ -162,7 +163,7 @@
     <footer class="bg-white border-t border-gray-200 mt-auto">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-base text-gray-400">
-                &copy; 2025 <%= __('footer_rights') %>
+                &copy; <%= __('footer_rights') %>
             </p>
         </div>
     </footer>
