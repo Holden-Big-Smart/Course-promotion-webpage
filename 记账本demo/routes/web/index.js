@@ -1,93 +1,47 @@
 // index.js
 // 前台页面路由
 
-// 导入express
-const express = require("express");
-// 导入moment(处理日期字符串)
-const moment = require("moment");
-const AccountModel = require("../../models/AccountModel");
-// 导入中间件：检测登录
-const checkLoginMiddleware = require("../../middlewares/checkLoginMiddleware");
-
-// 创建路由对象
+const express = require('express');
 const router = express.Router();
+const CourseModel = require('../../models/CourseModel');
 
-// 首页的路由规则(直接重定向到账单列表的页面)
-router.get("/", (req, res) => {
-  // 重定向 /account
-  res.redirect("/account");
+// ---------------------------------------------------------
+// 1. 初始化数据路由 (运行一次后可删除)
+// 访问 http://localhost:3000/seed 即可写入数据
+// ---------------------------------------------------------
+router.get('/seed', async (req, res) => {
+  const data = [
+    { title: "电钢琴班", originalPrice: 700, price: 600, category: "成人", image: "https://xmauez-hk.myshopify.com/cdn/shop/files/da87f03da09016d15df0650833d3e408.png?v=1764672010&width=600", description: "专业的电钢琴教学" },
+    { title: "轻松健体瑜伽课程", originalPrice: 630, price: 530, category: "成人", image: "https://xmauez-hk.myshopify.com/cdn/shop/files/201c36a0d450b432ae7588cf59ab5059.png?v=1764671937&width=600", description: "舒缓身心，增强体质" },
+    { title: "课余托管", originalPrice: 1600, price: 1500, category: "儿童", image: "https://xmauez-hk.myshopify.com/cdn/shop/files/4242abe3be07935bd6115a20a30bdb78.png?v=1764671096&width=600", description: "安全可靠的课后托管" },
+    { title: "成人水彩画课程", originalPrice: 600, price: 500, category: "成人", image: "https://xmauez-hk.myshopify.com/cdn/shop/files/efa5ddceebef08bb844da8f8cb79b005.png?v=1764672317&width=600", description: "培养艺术情操" },
+    { title: "儿童珠心算", originalPrice: 500, price: 400, category: "儿童", image: "https://xmauez-hk.myshopify.com/cdn/shop/files/a723d00c14025de2f2fa9ae40f3e6fdb.png?v=1764670799&width=600", description: "开发大脑潜力" },
+    { title: "儿童国画班", originalPrice: 550, price: 450, category: "儿童", image: "https://xmauez-hk.myshopify.com/cdn/shop/files/402febaf41d0d85bce1d89efa4aa6ef0.png?v=1764671590&width=600", description: "传承中华文化" }
+  ];
+
+  try {
+    await CourseModel.deleteMany({}); // 先清空旧数据，防止重复
+    await CourseModel.insertMany(data);
+    res.send('数据初始化成功！请返回主页刷新。');
+  } catch (err) {
+    res.send('初始化失败: ' + err);
+  }
 });
 
-// 记账本列表
-router.get("/account", checkLoginMiddleware, function (req, res, next) {
-  // // 判断请求体中的session中的用户信息是否存在，如果不存在则跳转回"/login"界面
-  // if (!req.session.username) {
-  //   return res.redirect("/login");
-  // }
-
-  // 读取集合信息(按时间倒序排序)
-  AccountModel.find()
-    .sort({ time: -1 })
-    // 如果读取成功，会执行 then 中的回调函数
-    // data 是插入成功后返回的文档对象
-    .then((data) => {
-      // 向list.ejs传递获取到的账单信息数据(将data传递给list.ejs中的accounts)
-      res.render("list", { accounts: data, moment: moment });
-      // res.render("list", { accounts: accounts });
-    })
-    // 如果读取失败（例如违反了数据类型、连接断开等），会进入 catch
-    // err 是错误对象，包含具体错误信息
-    .catch((err) => {
-      res.status(500).send("读取失败");
-    });
-});
-
-// 添加记录
-router.get("/account/create", checkLoginMiddleware, function (req, res, next) {
-  // 跳转到create.ejs
-  res.render("create");
-});
-
-// 新增记录
-router.post("/account", checkLoginMiddleware, (req, res) => {
-  // 查看表单数据
-  // console.log(req.body);
-
-  // 插入数据库
-  AccountModel.create({
-    // 获取当前所有请求体的数据
-    ...req.body,
-    // 使用moment()修改req.body中的time属性，然后赋值给time
-    time: moment(req.body.time).toDate(),
-  })
-    // 如果插入成功，会执行 then 中的回调函数
-    // data 是插入成功后返回的文档对象
-    .then((data) => {
-      // res.send("添加记录");
-      // 成功提醒(成功后跳转至success.ejs页面)
-      res.render("success", { msg: "添加成功:D", url: "/account" });
-    })
-    // 如果插入失败（例如违反了数据类型、连接断开等），会进入 catch
-    // err 是错误对象，包含具体错误信息
-    .catch((err) => {
-      res.status(500).send("插入失败");
-    });
-});
-
-// 删除记录
-router.get("/account/:id", checkLoginMiddleware, (req, res) => {
-  // 获取params的id参数
-  let id = req.params.id;
-  // 删除
-  // db.get("accounts").remove({ id }).write();
-  AccountModel.deleteOne({ _id: id })
-    .then((data) => {
-      // 提示完成删除
-      res.render("success", { msg: "删除成功:X", url: "/account" });
-    })
-    .catch((err) => {
-      res.status(500).send("删除失败");
-    });
+// ---------------------------------------------------------
+// 2. 主页路由 (核心逻辑)
+// ---------------------------------------------------------
+router.get('/', async (req, res) => {
+  try {
+    // 从数据库获取所有课程，按 _id 倒序排列（最新的在前面）
+    const courses = await CourseModel.find().sort({ _id: -1 });
+    
+    // 渲染 index.ejs，并把 courses 数据传给页面
+    res.render('index', { courses: courses });
+  } catch (err) {
+    console.error(err);
+    res.render('error', { message: '获取课程失败', error: err });
+  }
 });
 
 module.exports = router;
