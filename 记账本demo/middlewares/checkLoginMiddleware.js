@@ -1,4 +1,5 @@
 // checkLoginMiddleware.js
+// 用于后台权限
 // 检测登录状态的中间件
 
 module.exports = (req, res, next) => {

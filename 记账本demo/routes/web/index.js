@@ -1,4 +1,5 @@
 // index.js
+// 前台页面路由
 
 // 导入express
 const express = require("express");

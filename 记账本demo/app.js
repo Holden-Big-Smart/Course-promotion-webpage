@@ -16,8 +16,6 @@ const MongoStore = require("connect-mongo");
 // 导入配置文件以动态设置下方代码中的mongoUrl
 const { DBHOST, DBPORT, DBNAME } = require("./config/config");
 
-// 导入account接口路由文件
-const accountRouter = require("./routes/api/account");
 // 导入web中的注册页/登录页的路由文件login.js
 const loginRouter = require("./routes/web/login");
 // 导入api中的注册页/登录页的路由文件login.js
