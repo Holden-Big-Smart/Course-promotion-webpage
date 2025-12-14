@@ -28,9 +28,7 @@ const checkLogin = (req, res, next) => {
     return res.redirect("/wokevfuitlkuxrla/login");
   }
 
-  // 2. ✅ 新增：设置 HTTP 响应头，禁止浏览器缓存此页面
-  // 这样当用户登出后点“后退”，浏览器就被迫重新向服务器请求
-  // 服务器检测到没有 Session，就会再次踢回登录页
+  // 2. 设置 HTTP 响应头，禁止浏览器缓存此页面
   res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
   res.set("Pragma", "no-cache");
   res.set("Expires", "-1");
@@ -44,11 +42,25 @@ const checkLogin = (req, res, next) => {
 router.get("/reg", (req, res) => {
   res.render("admin/reg");
 });
-// 注册逻辑
+
+// ✅ 注册逻辑 (在此处添加了同名检测)
 router.post("/reg", async (req, res) => {
   try {
     const { username, password } = req.body;
+
+    // 1. 检测是否同名
+    const existingUser = await UserModel.findOne({ username });
+    if (existingUser) {
+      // 如果已存在，渲染错误页面并停止后续执行
+      return res.render("shared/error", { 
+        message: "注册失败：该用户名已被占用", 
+        error: { status: 409, stack: "请尝试使用其他用户名注册" } 
+      });
+    }
+
+    // 2. 如果没有同名，才创建新用户
     await UserModel.create({ username, password: md5(password) });
+    
     res.render("shared/success", {
       msg: "注册成功",
       url: "/wokevfuitlkuxrla/login",
@@ -58,10 +70,8 @@ router.post("/reg", async (req, res) => {
   }
 });
 
-// ✅ 修改：登录页路由 (GET)
+// 登录页路由 (GET)
 router.get("/login", (req, res) => {
-  // 1. 核心修复：添加禁止缓存头
-  // 这会强制浏览器不缓存表单填写状态
   res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
   res.set("Pragma", "no-cache");
   res.set("Expires", "-1");
@@ -72,6 +82,7 @@ router.get("/login", (req, res) => {
 // 登录逻辑
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
+  // 注意：登录时也需要用 md5 加密后对比
   const user = await UserModel.findOne({ username, password: md5(password) });
   if (user) {
     req.session.username = user.username;
@@ -84,10 +95,7 @@ router.post("/login", async (req, res) => {
 
 // 退出登录
 router.post("/logout", (req, res) => {
-  // 销毁 session
   req.session.destroy(() => {
-    // 这里不再使用 res.redirect('/wokevfuitlkuxrla/login');
-    // 而是返回 JSON 告诉前端“操作成功”，让前端去执行 location.replace
     res.json({ status: "ok", msg: "退出成功" });
   });
 });
@@ -96,11 +104,11 @@ router.post("/logout", (req, res) => {
 router.get("/dashboard", checkLogin, async (req, res) => {
   try {
     const courses = await CourseModel.find().sort({ _id: -1 });
-    const categories = await CategoryModel.find(); // 获取所有分类
+    const categories = await CategoryModel.find(); 
 
     res.render("admin/dashboard", {
       courses,
-      categories, // 传递给前端
+      categories, 
       user: { username: req.session.username },
     });
   } catch (err) {
@@ -115,53 +123,41 @@ router.post(
   upload.single("image"),
   async (req, res) => {
     try {
-      // 1. 获取表单数据
       let { title, price, startTime, endTime, weekDay, category, description } =
         req.body;
 
-      // 2. 处理分类 (category)
-      // 前端是通过 hidden input 传过来的逗号分隔字符串 "艺术,运动"，所以需要 split
       let categoryArray = [];
       if (category) {
-        // 如果只有一项且没有逗号，split 也会正常工作返回数组
         categoryArray = category
           .split(",")
           .filter((item) => item.trim() !== "");
       }
 
-      // 3. ✅ 修复重点：处理星期 (weekDay)
-      // Checkbox 的特性：选中一个传字符串，选中多个传数组
       let weekDayArray = [];
       if (weekDay) {
         if (Array.isArray(weekDay)) {
-          // 如果已经是数组 (选中了多个)，直接使用
           weekDayArray = weekDay;
         } else {
-          // 如果是字符串 (只选中了一个)，把它变成数组
           weekDayArray = [weekDay];
         }
       }
 
-      // 4. 处理图片路径
       const image = req.file ? `/uploads/${req.file.filename}` : "";
 
-      // 5. 存入数据库
       await CourseModel.create({
         title: title,
         price: price,
-        category: categoryArray, // 使用处理后的数组
+        category: categoryArray, 
         startTime: startTime,
         endTime: endTime,
-        weekDay: weekDayArray, // 使用处理后的数组
+        weekDay: weekDayArray, 
         description: description,
         image: image,
       });
 
-      // 成功后跳转回仪表盘
       res.redirect("/wokevfuitlkuxrla/dashboard");
     } catch (err) {
       console.error("添加课程失败:", err);
-      // 简单渲染一个错误页或者重定向
       res.render("error", { message: "添加失败", error: err });
     }
   }
@@ -173,7 +169,6 @@ router.get("/course/delete/:id", checkLogin, async (req, res) => {
     const id = req.params.id;
     const course = await CourseModel.findById(id);
     if (course && course.image) {
-      // 删除本地文件
       const filePath = path.join(__dirname, "../../public", course.image);
       fs.unlink(filePath, (err) => {
         if (err) console.error(err);
@@ -197,7 +192,6 @@ router.post("/category/add", checkLogin, async (req, res) => {
     const exists = await CategoryModel.findOne({ name });
     if (!exists) {
       const newCat = await CategoryModel.create({ name });
-      // 返回新建的分类对象，包含 _id 和 name
       res.json({ status: "ok", data: newCat });
     } else {
       res.json({ status: "error", msg: "分类已存在" });
@@ -217,12 +211,12 @@ router.delete("/category/delete/:id", checkLogin, async (req, res) => {
   }
 });
 
-// --- ✅ 新增重点 1: 进入编辑页面 ---
+// --- 进入编辑页面 ---
 router.get("/course/edit/:id", checkLogin, async (req, res) => {
   try {
     const id = req.params.id;
     const course = await CourseModel.findById(id);
-    const categories = await CategoryModel.find(); // 获取分类供下拉框使用
+    const categories = await CategoryModel.find(); 
 
     if (!course) {
       return res.render("error", { message: "课程不存在", error: {} });
@@ -238,7 +232,7 @@ router.get("/course/edit/:id", checkLogin, async (req, res) => {
   }
 });
 
-// --- ✅ 新增重点 2: 提交更新逻辑 ---
+// --- 提交更新逻辑 ---
 router.post(
   "/course/update",
   checkLogin,
@@ -256,7 +250,6 @@ router.post(
         category,
       } = req.body;
 
-      // 1. 处理数组字段 (同添加逻辑)
       if (weekDay) {
         weekDay = weekDay.split(",").filter((item) => item.trim() !== "");
       } else {
@@ -269,7 +262,6 @@ router.post(
         category = [];
       }
 
-      // 2. 准备更新的数据对象
       const updateData = {
         title,
         price,
@@ -280,18 +272,10 @@ router.post(
         category,
       };
 
-      // 3. 处理图片逻辑
-      // 如果 req.file 存在，说明用户上传了新图，使用新路径
-      // 如果 req.file 不存在，说明用户没改图片，不做处理(保留原图)
       if (req.file) {
         updateData.image = `/uploads/${req.file.filename}`;
-
-        // (可选优化) 这里可以顺便把旧图片删掉，避免垃圾文件堆积
-        // const oldCourse = await CourseModel.findById(id);
-        // fs.unlink(...)
       }
 
-      // 4. 执行更新
       await CourseModel.updateOne({ _id: id }, updateData);
 
       res.redirect("/wokevfuitlkuxrla/dashboard");

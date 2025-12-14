@@ -1,31 +1,69 @@
-<!-- success.html -->
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>提醒</title>
-  <style>
-    body{
-        background-color: #f57f6a;
-    }
-    .container{
-        text-align: center;
-    }
-    .h-50{
-      height: 50px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>操作成功</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome 图标 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 简单的淡入动画 */
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <div class="h-50"></div>
-    <div class="alert alert-success" role="alert">
-      <h1><%= msg %></h1>
-      <p><a href="<%= url %>">点击跳转</a></p>
+<body class="bg-gray-100 h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- 成功卡片 -->
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center fade-in-up border border-gray-100">
+        
+        <!-- 绿色圆圈图标 -->
+        <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 mb-6">
+            <i class="fas fa-check text-green-600 text-4xl"></i>
+        </div>
+        
+        <!-- 标题 -->
+        <h2 class="text-2xl font-extrabold text-gray-800 mb-2">操作成功</h2>
+        
+        <!-- 动态消息内容 -->
+        <p class="text-gray-500 mb-8 font-medium">
+            <%= msg %>
+        </p>
+        
+        <!-- 跳转按钮 -->
+        <a href="<%= url %>" class="block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-green-200 transform active:scale-95">
+            立即跳转
+        </a>
+        
+        <!-- 倒计时提示 -->
+        <p class="text-xs text-gray-400 mt-6">
+            系统将在 <span id="countdown" class="font-bold text-green-600">3</span> 秒后自动跳转...
+        </p>
     </div>
-  </div>
+
+    <!-- 自动跳转脚本 -->
+    <script>
+        let seconds = 3;
+        const countdownEl = document.getElementById('countdown');
+        // 获取后端传来的跳转地址，如果没有则默认回首页
+        const targetUrl = "<%= url || '/' %>"; 
+        
+        const timer = setInterval(() => {
+            seconds--;
+            if (countdownEl) countdownEl.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(timer);
+                window.location.href = targetUrl;
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
