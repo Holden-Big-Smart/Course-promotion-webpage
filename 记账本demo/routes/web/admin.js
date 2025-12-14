@@ -23,9 +23,18 @@ const upload = multer({ storage: storage });
 
 // --- 2. 中间件：检查是否登录 ---
 const checkLogin = (req, res, next) => {
+  // 1. 如果没有 Session，跳转登录
   if (!req.session.username) {
     return res.redirect("/admin/login");
   }
+
+  // 2. ✅ 新增：设置 HTTP 响应头，禁止浏览器缓存此页面
+  // 这样当用户登出后点“后退”，浏览器就被迫重新向服务器请求
+  // 服务器检测到没有 Session，就会再次踢回登录页
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '-1');
+
   next();
 };
 
@@ -64,10 +73,13 @@ router.post("/login", async (req, res) => {
 });
 
 // 退出登录
-router.get("/logout", (req, res) => {
-  req.session.destroy(() => {
-    res.redirect("/admin/login");
-  });
+router.post('/logout', (req, res) => {
+    // 销毁 session
+    req.session.destroy(() => {
+        // 这里不再使用 res.redirect('/admin/login');
+        // 而是返回 JSON 告诉前端“操作成功”，让前端去执行 location.replace
+        res.json({ status: 'ok', msg: '退出成功' });
+    });
 });
 
 // --- 4. 后台管理主页 (Dashboard) ---
