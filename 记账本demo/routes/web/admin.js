@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const sharp = require("sharp"); // 引入 sharp
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
@@ -9,16 +10,17 @@ const CategoryModel = require("../../models/CategoryModel");
 const md5 = require("md5"); // 建议安装 npm install md5
 
 // --- 1. 配置图片上传 (Multer) ---
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + "-" + uniqueSuffix + ext);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "public/uploads/");
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     const ext = path.extname(file.originalname);
+//     cb(null, file.fieldname + "-" + uniqueSuffix + ext);
+//   },
+// });
+const storage = multer.memoryStorage(); // 改用内存存储
 const upload = multer({ storage: storage });
 
 // --- 2. 中间件：检查是否登录 ---
@@ -34,6 +36,54 @@ const checkLogin = (req, res, next) => {
   res.set("Expires", "-1");
 
   next();
+};
+
+// --- 2. 新增：图片处理中间件 ---
+const processImage = async (req, res, next) => {
+  // 如果没有上传文件，直接跳过
+  if (!req.file) return next();
+
+  // 生成统一的文件名基础 (时间戳-随机数)
+  const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+  const filenameBase = `course-${uniqueSuffix}`; 
+  const outputDir = path.join(__dirname, "../../public/uploads"); // 你的图片存储路径
+
+  try {
+    // 并行处理三种尺寸
+    await Promise.all([
+      // 1. 生成缩略图 (400px) - 后缀 -thumb.webp
+      sharp(req.file.buffer)
+        .resize(400) // 宽度400，高度自适应
+        .webp({ quality: 80 })
+        .toFile(path.join(outputDir, `${filenameBase}-thumb.webp`)),
+
+      // 2. 生成中等图 (800px) - 后缀 -medium.webp (通常作为默认显示)
+      sharp(req.file.buffer)
+        .resize(800)
+        .webp({ quality: 80 })
+        .toFile(path.join(outputDir, `${filenameBase}-medium.webp`)),
+
+      // 3. 生成大图 (1200px) - 后缀 -large.webp
+      sharp(req.file.buffer)
+        .resize(1200, null, { withoutEnlargement: true }) // 如果原图小于1200就不放大
+        .webp({ quality: 80 })
+        .toFile(path.join(outputDir, `${filenameBase}-large.webp`))
+    ]);
+
+    // --- 关键点 ---
+    // 我们需要决定存入数据库的是哪个路径。
+    // 方案：默认存入 "中等图" 的路径，兼顾清晰度和体积。
+    // 前端如果需要其他尺寸，可以通过替换文件名后缀 (-medium.webp -> -thumb.webp) 来获取。
+    
+    // 修改 req.file.filename 和 path，以便后续控制器像往常一样使用
+    req.file.filename = `${filenameBase}-medium.webp`;
+    req.body.image = `/uploads/${filenameBase}-medium.webp`; // 构造存入数据库的完整路径
+
+    next();
+  } catch (error) {
+    console.error("图片处理失败:", error);
+    next(error);
+  }
 };
 
 // --- 3. 注册/登录页面路由 ---
@@ -130,6 +180,7 @@ router.post(
   "/course/add",
   checkLogin,
   upload.single("image"),
+  processImage, // <--- 必须加在这里！
   async (req, res) => {
     try {
       let { title, price, startTime, endTime, weekDay, category, description } =
@@ -177,12 +228,23 @@ router.get("/course/delete/:id", checkLogin, async (req, res) => {
   try {
     const id = req.params.id;
     const course = await CourseModel.findById(id);
+    
     if (course && course.image) {
-      const filePath = path.join(__dirname, "../../public", course.image);
-      fs.unlink(filePath, (err) => {
-        if (err) console.error(err);
+      // course.image 格式是 /uploads/course-xxx-medium.webp
+      // 我们需要解析出基础路径
+      const mediumPath = path.join(__dirname, "../../public", course.image);
+      const thumbPath = mediumPath.replace("-medium.webp", "-thumb.webp");
+      const largePath = mediumPath.replace("-medium.webp", "-large.webp");
+
+      // 尝试删除所有相关文件
+      [mediumPath, thumbPath, largePath].forEach(p => {
+        fs.unlink(p, (err) => {
+            // 忽略文件不存在的错误，只打印其他错误
+            if (err && err.code !== 'ENOENT') console.error("删除文件失败:", err);
+        });
       });
     }
+    
     await CourseModel.deleteOne({ _id: id });
     res.redirect("/wokevfuitlkuxrla/dashboard");
   } catch (err) {
@@ -246,6 +308,7 @@ router.post(
   "/course/update",
   checkLogin,
   upload.single("image"),
+  processImage, // <--- 插入在这里
   async (req, res) => {
     try {
       let {
