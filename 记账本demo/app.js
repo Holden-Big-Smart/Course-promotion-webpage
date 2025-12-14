@@ -42,6 +42,48 @@ i18n.configure({
 });
 app.use(i18n.init); 
 
+// ==========================================
+// 图片防盗链中间件 (Anti-Hotlink Middleware)
+// ==========================================
+const allowList = [
+    'localhost', 
+    '127.0.0.1', 
+    'dacsmy.space'
+    // 'www.your-production-domain.com', // ⚠️ 上线时请务必把你的真实域名加在这里！
+];
+
+const antiHotlink = (req, res, next) => {
+    // 1. 检查请求是否针对图片文件 (包括您新加的 webp)
+    const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(req.path);
+    
+    if (isImage) {
+        const referer = req.headers.referer;
+        
+        // 2. 如果存在 Referer 头 (说明是网页引用)
+        if (referer) {
+            try {
+                const refererHost = new URL(referer).hostname;
+                
+                // 3. 如果来源域名不在白名单中
+                if (!allowList.includes(refererHost)) {
+                    console.log(`🚫 [防盗链拦截] 来自: ${refererHost}, 请求: ${req.path}`);
+                    return res.status(403).send('Forbidden: Access is denied.');
+                }
+            } catch (err) {
+                console.error('防盗链 Referer 解析错误:', err);
+                // 解析出错时，视安全策略决定是否拦截，通常建议放行以免误杀
+            }
+        }
+        // 注意：如果没有 Referer (比如直接在浏览器输入图片网址)，通常默认放行
+    }
+    
+    next();
+};
+
+// ⚠️ 必须放在 express.static 之前才能生效
+app.use(antiHotlink); 
+// ==========================================
+
 // --- 静态资源目录 ---
 app.use(express.static(path.join(__dirname, "public")));
 
