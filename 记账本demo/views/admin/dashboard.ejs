@@ -316,7 +316,7 @@
         // ==========================================
         // 注意：这里需要后端传 categories 数组，格式如 [{_id:1, name:'艺术'}, ...]
         // 如果后端还没传，这里给个空数组防止报错
-        var serverCategories = <% - (typeof categories !== 'undefined' && categories) ? JSON.stringify(categories) : "[]" %>;
+        var serverCategories = <%- (typeof categories !== 'undefined' && categories) ? JSON.stringify(categories) : "[]" %>;
 
         var state = {
             'category-select': { selected: [], options: serverCategories }
