@@ -79,17 +79,26 @@ router.get("/login", (req, res) => {
   res.render("admin/login");
 });
 
-// 登录逻辑
+// ✅ 修改：登录逻辑 (错误时跳转 error 页面)
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  // 注意：登录时也需要用 md5 加密后对比
-  const user = await UserModel.findOne({ username, password: md5(password) });
-  if (user) {
-    req.session.username = user.username;
-    req.session._id = user._id;
-    res.redirect("/wokevfuitlkuxrla/dashboard");
-  } else {
-    res.send('账号或密码错误 <a href="/wokevfuitlkuxrla/login">重试</a>');
+  try {
+    const { username, password } = req.body;
+    // 注意：登录时也需要用 md5 加密后对比
+    const user = await UserModel.findOne({ username, password: md5(password) });
+    
+    if (user) {
+      req.session.username = user.username;
+      req.session._id = user._id;
+      res.redirect("/wokevfuitlkuxrla/dashboard");
+    } else {
+      // 修改处：不再直接 send 字符串，而是渲染 error 页面
+      res.render("shared/error", { 
+        message: "登录失败：账号或密码错误", 
+        error: { status: 401, stack: "请检查您的用户名和密码是否正确，或者尝试重置密码。" } 
+      });
+    }
+  } catch (err) {
+    res.render("shared/error", { message: "系统错误，请稍后重试", error: err });
   }
 });
 

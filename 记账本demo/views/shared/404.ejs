@@ -1,16 +1,206 @@
-<!-- 404.ejs -->
- 
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404</title>
+    <title>500 Internal Server Error | Cloudflare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        /* 字体粗细调整 */
+        .font-light-custom { font-weight: 300; }
+        
+        /* 颜色定义 */
+        .text-cf-green { color: #5fb336; } /* 这种绿色更接近图片中的鲜亮绿 */
+        .text-cf-red { color: #bd2426; }
+        .text-cf-blue { color: #3498db; }
+        .text-cf-gray { color: #999; }
+        .bg-cf-gray { background-color: #f2f2f2; }
+        .icon-gray { color: #9a9a9a; }
+
+        /* 徽章样式 */
+        .status-badge {
+            position: absolute;
+            bottom: -5px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #f2f2f2; /* 与背景同色形成切割感 */
+            font-size: 12px;
+            color: white;
+        }
+        .badge-green { background-color: #5fb336; }
+        .badge-red { background-color: #bd2426; }
+
+        /* 虚线连接线 */
+        .dashed-line {
+            border-top: 2px dashed #d8d8d8;
+            height: 1px;
+            width: 100%;
+            margin-top: 2rem; 
+        }
+        
+        /* 移动端适配调整 */
+        @media (max-width: 768px) {
+            .dashed-line { display: none; }
+            .status-container { flex-direction: column; gap: 40px; }
+        }
+    </style>
 </head>
+<body class="flex flex-col min-h-screen">
 
-<body>
-    <h1>404 Not Foundddddddddddddddd</h1>
+    <!-- 1. 顶部 Header -->
+    <div class="w-full bg-white px-6 py-8 md:px-0">
+        <div class="max-w-5xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end gap-4">
+                <h1 class="text-4xl md:text-[42px] font-light-custom text-gray-800 leading-tight">
+                    Internal server error
+                </h1>
+                <span class="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded mb-2 md:mb-3 font-semibold">
+                    Error code 666
+                </span>
+            </div>
+            <div class="mt-2 text-sm text-gray-600">
+                Visit <a href="#" class="text-blue-500 hover:underline">cloudflare.com</a> for more information.
+            </div>
+            <div class="mt-1 text-sm text-gray-400">
+                <span id="current-time"></span> UTC
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 中间灰色状态栏 (核心视觉) -->
+    <div class="w-full bg-cf-gray border-t border-gray-200 border-b border-gray-200 py-12 px-6 md:px-0">
+        <div class="max-w-5xl mx-auto relative">
+            
+            <!-- 背景虚线 (仅桌面端) -->
+            <div class="hidden md:block absolute top-10 left-0 w-full z-0 px-20">
+                <div class="border-t-2 border-dashed border-gray-300 w-full h-1"></div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center relative z-10 text-center status-container px-4 md:px-20">
+                
+                <!-- Browser (Working) -->
+                <div class="flex flex-col items-center w-full md:w-1/3">
+                    <div class="relative mb-6">
+                        <i class="fas fa-window-maximize text-6xl icon-gray"></i> <!-- 浏览器图标 -->
+                        <div class="status-badge badge-green">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div class="text-lg text-gray-800 mb-1">You</div>
+                    <div class="text-xl text-cf-gray font-light-custom mb-1">Browser</div>
+                    <div class="text-xl text-cf-green font-light-custom">Working</div>
+                </div>
+
+                <!-- Cloudflare (Error - 核心甩锅点) -->
+                <div class="flex flex-col items-center w-full md:w-1/3">
+                    <div class="relative mb-6">
+                        <i class="fas fa-cloud text-6xl icon-gray"></i>
+                        <div class="status-badge badge-red">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    </div>
+                    <div class="text-lg text-gray-800 mb-1">San Francisco</div>
+                    <div class="text-xl text-cf-blue font-light-custom mb-1">Cloudflare</div>
+                    <div class="text-xl text-cf-red font-light-custom">Error</div>
+                </div>
+
+                <!-- Host/Website (Working - 证明你网站没挂) -->
+                <div class="flex flex-col items-center w-full md:w-1/3">
+                    <div class="relative mb-6">
+                        <i class="fas fa-server text-6xl icon-gray"></i>
+                        <div class="status-badge badge-green">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    </div>
+                    <div class="text-lg text-gray-800 mb-1">Website</div>
+                    <div class="text-xl text-cf-gray font-light-custom mb-1">Host</div>
+                    <div class="text-xl text-cf-green font-light-custom">Working</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 底部内容区 -->
+    <div class="w-full bg-white flex-grow px-6 py-10 md:px-0">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- What happened -->
+                <div>
+                    <h2 class="text-3xl font-light-custom text-gray-800 mb-4">What happened?</h2>
+                    <p class="text-gray-600 leading-relaxed">
+                        There is an internal server error on Cloudflare's network.
+                    </p>
+                </div>
+
+                <!-- What can I do -->
+                <div>
+                    <h2 class="text-3xl font-light-custom text-gray-800 mb-4">What can I do?</h2>
+                    <p class="text-gray-600 leading-relaxed mb-4">
+                        Please try again in a few minutes.
+                    </p>
+                    <p class="text-sm text-gray-400">
+                        If you are the owner of this website, check your Cloudflare status.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 底部 Ray ID -->
+            <div class="border-t border-gray-200 mt-16 pt-6 text-xs text-gray-500">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-2">
+                    <div>
+                        Ray ID: <span class="font-mono text-gray-800"><%= Math.random().toString(16).substr(2, 16) %></span>
+                        &bull; Your IP: <span id="user-ip" class="text-blue-600 cursor-pointer">Click to reveal</span>
+                    </div>
+                    <div>
+                        Performance & security by <a href="#" class="text-blue-500 hover:underline">Cloudflare</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. 设置 UTC 时间
+        function updateTime() {
+            const now = new Date();
+            const year = now.getUTCFullYear();
+            const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(now.getUTCDate()).padStart(2, '0');
+            const hours = String(now.getUTCHours()).padStart(2, '0');
+            const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+        updateTime();
+
+        // 2. IP 点击显示 (模拟)
+        const ipSpan = document.getElementById('user-ip');
+        ipSpan.addEventListener('click', () => {
+            ipSpan.textContent = 'Wait...';
+            fetch('https://api.ipify.org?format=json')
+                .then(res => res.json())
+                .then(data => {
+                    ipSpan.textContent = data.ip;
+                    ipSpan.classList.remove('text-blue-600', 'cursor-pointer');
+                    ipSpan.classList.add('text-gray-800');
+                })
+                .catch(() => {
+                    ipSpan.textContent = 'Unknown';
+                });
+        });
+    </script>
 </body>
-
 </html>
