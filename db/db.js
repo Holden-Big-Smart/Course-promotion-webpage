@@ -1,40 +1,5 @@
 // // db.js
 
-// /**
-//  *
-//  * @param {*} success
-//  * @param {*} error
-//  */
-
-// module.exports = function (success, error ) {
-//   // 导入mongoose
-//   const mongoose = require("mongoose");
-
-//   // 导入配置文件(并进行解构赋值) DBHOST-IP DBPORT-端口 DBNAME-路径
-//   const { DBHOST, DBPORT, DBNAME } = require("../config/config.js");
-
-//   // 连接mongodb服务
-//   // mongoose.connect("mongodb://127.0.0.1:27017/mongo-test");
-//   mongoose.connect(`mongodb://${DBHOST}:${DBPORT}/${DBNAME}`);
-
-//   // 设置连接成功后的回调函数
-//   mongoose.connection.once("open", () => {
-//     success();
-//   });
-
-//   // 设置连接错误的回调函数
-//   mongoose.connection.on("error", () => {
-//     error();
-//   });
-
-//   // 设置连接关闭的回调函数
-//   mongoose.connection.on("close", () => {
-//     console.log("连接关闭");
-//   });
-// };
-
-// db.js
-
 const mongoose = require("mongoose");
 const { DBHOST, DBPORT, DBNAME } = require("../config/config");
 

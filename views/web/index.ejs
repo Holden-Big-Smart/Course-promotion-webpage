@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>屯门妇联山景中心 - 课程宣传</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script> -->
-    <!-- <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script> -->
-    <!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
 </head>
 
 <body class="bg-gray-50 flex flex-col min-h-screen">
@@ -20,8 +17,6 @@
                 <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='/'">
                     <img class="h-10 w-auto" src="/images/site_logo.webp" alt="Logo" />
                 </div>
-
-                <!-- <div id="react_search_root" class="flex-1 max-w-lg mx-4 md:mx-8"></div> -->
 
                 <div class="flex-1 max-w-lg mx-4 md:mx-8 relative group">
                     <div class="relative">
@@ -114,16 +109,16 @@
         </div>
     </nav>
 
-    <div class="relative bg-gray-900 text-white h-64" >
+    <div class="relative bg-gray-900 text-white h-64">
         <div class="absolute inset-0">
             <img class="w-full h-full object-cover opacity-60" src="/images/home_banner.webp" alt="Banner">
         </div>
         <div class="relative max-w-7xl mx-auto h-full flex flex-col justify-center items-center text-center px-4">
             <h1 class="text-4xl font-extrabold text-white sm:text-5xl drop-shadow-lg tracking-wider">
-                课程宣传测试
+                课程宣传
             </h1>
             <p class="mt-6 text-xl max-w-3xl mx-auto drop-shadow-md text-gray-200">
-                屯门妇联山景中心宣传测试 - 探索我们的精彩课程
+                屯门妇联山景中心 - 探索我们的精彩课程
             </p>
         </div>
     </div>
@@ -268,18 +263,16 @@
 
             if (menuBtn && mobileMenu) {
                 menuBtn.addEventListener('click', (e) => {
-                    e.stopPropagation(); // 防止点击按钮本身触发“点击外部关闭”逻辑
+                    e.stopPropagation();
                     mobileMenu.classList.toggle('hidden');
                 });
 
-                // 点击菜单内部链接后自动关闭
                 mobileMenu.querySelectorAll('a').forEach(link => {
                     link.addEventListener('click', () => {
                         mobileMenu.classList.add('hidden');
                     });
                 });
 
-                // 点击页面其他地方关闭菜单
                 document.addEventListener('click', (e) => {
                     if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
                         mobileMenu.classList.add('hidden');
@@ -287,28 +280,23 @@
                 });
             }
 
-            // 1. 监听输入事件 (带防抖)
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.trim();
 
-                // 清除上一次的定时器
                 clearTimeout(debounceTimer);
 
-                // 如果输入为空，隐藏结果框
                 if (query.length === 0) {
                     resultsContainer.classList.add('hidden');
                     resultsContainer.innerHTML = '';
                     return;
                 }
 
-                // 延迟 300ms 后执行搜索，防止请求过于频繁
                 debounceTimer = setTimeout(async () => {
                     try {
                         const res = await fetch(`/api/course/search?q=${encodeURIComponent(query)}`);
                         const json = await res.json();
 
                         if (json.status === '0000' && json.data.length > 0) {
-                            // 生成结果列表 HTML
                             const html = json.data.map(course => `
                             <a href="/course/${course._id}" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-50 flex items-center transition">
                                 <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
@@ -324,7 +312,6 @@
                             resultsContainer.innerHTML = html;
                             resultsContainer.classList.remove('hidden');
                         } else {
-                            // 无结果
                             resultsContainer.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">未找到相关课程</div>';
                             resultsContainer.classList.remove('hidden');
                         }
@@ -334,16 +321,13 @@
                 }, 300);
             });
 
-            // 2. 聚焦时如果框内有字，重新显示结果
             searchInput.addEventListener('focus', () => {
                 if (searchInput.value.trim().length > 0 && resultsContainer.innerHTML !== '') {
                     resultsContainer.classList.remove('hidden');
                 }
             });
 
-            // 3. 点击外部区域关闭下拉框
             document.addEventListener('click', (e) => {
-                // 如果点击的不是输入框，也不是结果框内部
                 if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
                     resultsContainer.classList.add('hidden');
                 }
