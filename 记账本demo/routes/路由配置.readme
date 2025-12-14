@@ -19,26 +19,26 @@ GET /api/course/search?q=xxx : 搜索课程
 
 后台管理 (Admin Only)
 
-GET /admin/login : 管理员登录页
+GET /wokevfuitlkuxrla/login : 管理员登录页
 
-POST /admin/login : 登录提交
+POST /wokevfuitlkuxrla/login : 登录提交
 
-GET /admin/reg : 管理员注册页 (建议后续关闭)
+GET /wokevfuitlkuxrla/reg : 管理员注册页 (建议后续关闭)
 
-POST /admin/reg : 注册提交
+POST /wokevfuitlkuxrla/reg : 注册提交
 
-GET /admin/dashboard : 管理后台仪表盘
+GET /wokevfuitlkuxrla/dashboard : 管理后台仪表盘
 
-POST /admin/course/add : 发布课程
+POST /wokevfuitlkuxrla/course/add : 发布课程
 
-GET /admin/course/delete/:id : 删除课程
+GET /wokevfuitlkuxrla/course/delete/:id : 删除课程
 
-GET /admin/course/edit/:id : 编辑课程页
+GET /wokevfuitlkuxrla/course/edit/:id : 编辑课程页
 
-POST /admin/course/update : 提交更新
+POST /wokevfuitlkuxrla/course/update : 提交更新
 
-POST /admin/category/add : 添加分类
+POST /wokevfuitlkuxrla/category/add : 添加分类
 
-DELETE /admin/category/delete/:id : 删除分类
+DELETE /wokevfuitlkuxrla/category/delete/:id : 删除分类
 
-GET /admin/logout : 退出登录
+GET /wokevfuitlkuxrla/logout : 退出登录

@@ -68,8 +68,8 @@ app.use(
 app.use("/api/course", courseApiRouter); // 搜索功能
 
 // 2. 后台管理路由 (所有 /admin 开头的请求)
-// 包括: /admin/login, /admin/dashboard, /admin/course/add 等
-app.use('/admin', adminRouter);
+// 包括: /wokevfuitlkuxrla/login, /wokevfuitlkuxrla/dashboard, /wokevfuitlkuxrla/course/add 等
+app.use('/wokevfuitlkuxrla', adminRouter);
 
 // 3. 前台页面路由 (主页, 关于我们, 详情页等)
 // 注意：indexRouter 必须放在最后，因为它处理根路径 "/"

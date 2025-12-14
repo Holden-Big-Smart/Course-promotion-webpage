@@ -25,7 +25,7 @@ const upload = multer({ storage: storage });
 const checkLogin = (req, res, next) => {
   // 1. 如果没有 Session，跳转登录
   if (!req.session.username) {
-    return res.redirect("/admin/login");
+    return res.redirect("/wokevfuitlkuxrla/login");
   }
 
   // 2. ✅ 新增：设置 HTTP 响应头，禁止浏览器缓存此页面
@@ -49,7 +49,7 @@ router.post("/reg", async (req, res) => {
   try {
     const { username, password } = req.body;
     await UserModel.create({ username, password: md5(password) });
-    res.render("success", { msg: "注册成功", url: "/admin/login" });
+    res.render("success", { msg: "注册成功", url: "/wokevfuitlkuxrla/login" });
   } catch (err) {
     res.render("error", { message: "注册失败", error: err });
   }
@@ -66,9 +66,9 @@ router.post("/login", async (req, res) => {
   if (user) {
     req.session.username = user.username;
     req.session._id = user._id;
-    res.redirect("/admin/dashboard");
+    res.redirect("/wokevfuitlkuxrla/dashboard");
   } else {
-    res.send('账号或密码错误 <a href="/admin/login">重试</a>');
+    res.send('账号或密码错误 <a href="/wokevfuitlkuxrla/login">重试</a>');
   }
 });
 
@@ -76,7 +76,7 @@ router.post("/login", async (req, res) => {
 router.post('/logout', (req, res) => {
     // 销毁 session
     req.session.destroy(() => {
-        // 这里不再使用 res.redirect('/admin/login');
+        // 这里不再使用 res.redirect('/wokevfuitlkuxrla/login');
         // 而是返回 JSON 告诉前端“操作成功”，让前端去执行 location.replace
         res.json({ status: 'ok', msg: '退出成功' });
     });
@@ -148,7 +148,7 @@ router.post(
       });
 
       // 成功后跳转回仪表盘
-      res.redirect("/admin/dashboard");
+      res.redirect("/wokevfuitlkuxrla/dashboard");
     } catch (err) {
       console.error("添加课程失败:", err);
       // 简单渲染一个错误页或者重定向
@@ -170,7 +170,7 @@ router.get("/course/delete/:id", checkLogin, async (req, res) => {
       });
     }
     await CourseModel.deleteOne({ _id: id });
-    res.redirect("/admin/dashboard");
+    res.redirect("/wokevfuitlkuxrla/dashboard");
   } catch (err) {
     res.render("error", { message: "删除失败", error: err });
   }
@@ -284,7 +284,7 @@ router.post(
       // 4. 执行更新
       await CourseModel.updateOne({ _id: id }, updateData);
 
-      res.redirect("/admin/dashboard");
+      res.redirect("/wokevfuitlkuxrla/dashboard");
     } catch (err) {
       console.error(err);
       res.render("error", { message: "更新失败", error: err });
