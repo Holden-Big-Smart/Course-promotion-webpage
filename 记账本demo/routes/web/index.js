@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
     const courses = await CourseModel.find().sort({ _id: -1 });
 
     // 渲染 index.ejs，并把 courses 数据传给页面
-    res.render("index", { courses: courses });
+    res.render("web/index", { courses: courses });
   } catch (err) {
     console.error(err);
     res.render("error", { message: "获取课程失败", error: err });
@@ -27,12 +27,12 @@ router.get("/", async (req, res) => {
 
 // 关于我们
 router.get("/about", (req, res) => {
-  res.render("about");
+  res.render("web/about");
 });
 
 // 联系我们
 router.get("/contact", (req, res) => {
-  res.render("contact");
+  res.render("web/contact");
 });
 
 // ---------------------------------------------------------
@@ -45,11 +45,11 @@ router.get("/course/:id", async (req, res) => {
 
     if (!course) {
       // 如果找不到ID (例如 ID 格式对但没数据)，跳转404
-      return res.render("404");
+      return res.render("shared/404");
     }
 
     // 渲染 detail.ejs，并将 course 数据传给页面
-    res.render("detail", { course: course });
+    res.render("web/detail", { course: course });
   } catch (err) {
     // 这里的 catch 通常捕捉 ID 格式错误或其他数据库错误
     res.render("error", { message: "课程不存在", error: err });

@@ -31,9 +31,9 @@ const checkLogin = (req, res, next) => {
   // 2. ✅ 新增：设置 HTTP 响应头，禁止浏览器缓存此页面
   // 这样当用户登出后点“后退”，浏览器就被迫重新向服务器请求
   // 服务器检测到没有 Session，就会再次踢回登录页
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-  res.set('Pragma', 'no-cache');
-  res.set('Expires', '-1');
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "-1");
 
   next();
 };
@@ -49,9 +49,12 @@ router.post("/reg", async (req, res) => {
   try {
     const { username, password } = req.body;
     await UserModel.create({ username, password: md5(password) });
-    res.render("success", { msg: "注册成功", url: "/wokevfuitlkuxrla/login" });
+    res.render("shared/success", {
+      msg: "注册成功",
+      url: "/wokevfuitlkuxrla/login",
+    });
   } catch (err) {
-    res.render("error", { message: "注册失败", error: err });
+    res.render("shared/error", { message: "注册失败", error: err });
   }
 });
 
@@ -59,9 +62,9 @@ router.post("/reg", async (req, res) => {
 router.get("/login", (req, res) => {
   // 1. 核心修复：添加禁止缓存头
   // 这会强制浏览器不缓存表单填写状态
-  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-  res.set('Pragma', 'no-cache');
-  res.set('Expires', '-1');
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "-1");
 
   res.render("admin/login");
 });
@@ -80,13 +83,13 @@ router.post("/login", async (req, res) => {
 });
 
 // 退出登录
-router.post('/logout', (req, res) => {
-    // 销毁 session
-    req.session.destroy(() => {
-        // 这里不再使用 res.redirect('/wokevfuitlkuxrla/login');
-        // 而是返回 JSON 告诉前端“操作成功”，让前端去执行 location.replace
-        res.json({ status: 'ok', msg: '退出成功' });
-    });
+router.post("/logout", (req, res) => {
+  // 销毁 session
+  req.session.destroy(() => {
+    // 这里不再使用 res.redirect('/wokevfuitlkuxrla/login');
+    // 而是返回 JSON 告诉前端“操作成功”，让前端去执行 location.replace
+    res.json({ status: "ok", msg: "退出成功" });
+  });
 });
 
 // --- 4. 后台管理主页 (Dashboard) ---

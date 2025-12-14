@@ -79,7 +79,7 @@ app.use("/", indexRouter);
 
 // 404 handler
 app.use(function (req, res, next) {
-  res.render("404");
+  res.render("shared/404");
 });
 
 // error handler
@@ -90,7 +90,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.render("shared/error");
 });
 
 module.exports = app;
