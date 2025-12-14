@@ -91,7 +91,7 @@ router.get("/dashboard", checkLogin, async (req, res) => {
     res.render("admin/dashboard", {
       courses,
       categories, // 传递给前端
-      user: req.session.username,
+      user: { username: req.session.username },
     });
   } catch (err) {
     res.render("error", { message: "加载失败", error: err });
