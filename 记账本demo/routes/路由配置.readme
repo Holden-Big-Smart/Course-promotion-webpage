@@ -1,0 +1,44 @@
+项目的所有有效 URL 如下：
+
+前台页面 (Public)
+
+GET / : 首页
+
+GET /about : 关于我们
+
+GET /contact : 联系我们
+
+GET /course/:id : 课程详情
+
+GET /lang/:locale : 切换语言
+
+前台 API (Public)
+
+GET /api/course/search?q=xxx : 搜索课程
+
+
+后台管理 (Admin Only)
+
+GET /admin/login : 管理员登录页
+
+POST /admin/login : 登录提交
+
+GET /admin/reg : 管理员注册页 (建议后续关闭)
+
+POST /admin/reg : 注册提交
+
+GET /admin/dashboard : 管理后台仪表盘
+
+POST /admin/course/add : 发布课程
+
+GET /admin/course/delete/:id : 删除课程
+
+GET /admin/course/edit/:id : 编辑课程页
+
+POST /admin/course/update : 提交更新
+
+POST /admin/category/add : 添加分类
+
+DELETE /admin/category/delete/:id : 删除分类
+
+GET /admin/logout : 退出登录

@@ -5,7 +5,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-const i18n = require('i18n'); // 只导入一次
+const i18n = require('i18n'); 
 
 // 导入 session 相关
 const session = require("express-session");
@@ -14,14 +14,12 @@ const MongoStore = require("connect-mongo");
 // 导入配置
 const { DBHOST, DBPORT, DBNAME } = require("./config/config");
 
-// --- 路由文件导入 ---
+// --- 路由文件导入 (已清理旧路由) ---
 var indexRouter = require("./routes/web/index");
-const loginRouter = require("./routes/web/login");
 const adminRouter = require('./routes/web/admin');
-const loginApiRouter = require("./routes/api/login-api");
 const courseApiRouter = require('./routes/api/course-api');
 
-// ✅ 1. 初始化 app (整个文件只能有这一个 app 初始化)
+// 初始化 app
 var app = express();
 
 // --- 视图引擎设置 ---
@@ -32,7 +30,7 @@ app.set("view engine", "ejs");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser()); // ✅ 必须在 i18n.init 之前
+app.use(cookieParser()); 
 
 // --- i18n 配置与初始化 ---
 i18n.configure({
@@ -42,12 +40,12 @@ i18n.configure({
   cookie: 'lang',
   objectNotation: true,
 });
-app.use(i18n.init); // ✅ 启用 i18n
+app.use(i18n.init); 
 
 // --- 静态资源目录 ---
 app.use(express.static(path.join(__dirname, "public")));
 
-// --- Session 配置 (必须在静态资源之后，路由之前) ---
+// --- Session 配置 ---
 app.use(
   session({
     name: "sid",
@@ -64,16 +62,18 @@ app.use(
   })
 );
 
-// --- 注册路由 (整理并去重) ---
+// --- 注册路由 (已清理) ---
 
-// 1. API 接口路由 (通常放在最前面)
-app.use("/api/course", courseApiRouter); // 课程搜索 API
-app.use("/api", loginApiRouter);         // 登录 API
+// 1. API 接口路由
+app.use("/api/course", courseApiRouter); // 搜索功能
 
-// 2. Web 页面路由
-app.use('/admin', adminRouter); // 后台管理 (需要 Session 支持)
-app.use("/", loginRouter);      // 登录/注册页
-app.use("/", indexRouter);      // 前台主页 (包含 about, contact 等)
+// 2. 后台管理路由 (所有 /admin 开头的请求)
+// 包括: /admin/login, /admin/dashboard, /admin/course/add 等
+app.use('/admin', adminRouter);
+
+// 3. 前台页面路由 (主页, 关于我们, 详情页等)
+// 注意：indexRouter 必须放在最后，因为它处理根路径 "/"
+app.use("/", indexRouter);
 
 // --- 错误处理 ---
 
@@ -84,8 +84,11 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
+
+  // render the error page
   res.status(err.status || 500);
   res.render("error");
 });
