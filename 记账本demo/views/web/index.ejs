@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>屯门妇联山景中心 - 课程宣传</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script> -->
+    <!-- <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script> -->
+    <!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
 </head>
 
 <body class="bg-gray-50 flex flex-col min-h-screen">
@@ -21,7 +21,25 @@
                     <img class="h-10 w-auto" src="/images/site_logo.webp" alt="Logo" />
                 </div>
 
-                <div id="react_search_root" class="flex-1 max-w-lg mx-4 md:mx-8"></div>
+                <!-- <div id="react_search_root" class="flex-1 max-w-lg mx-4 md:mx-8"></div> -->
+
+                <div class="flex-1 max-w-lg mx-4 md:mx-8 relative group">
+                    <div class="relative">
+                        <input type="text" id="search-input"
+                            class="w-full bg-gray-100 border-transparent focus:bg-white border focus:border-blue-500 rounded-md py-2 px-4 pl-10 focus:outline-none transition-colors"
+                            placeholder="<%= __('search_placeholder') %>" autocomplete="off" />
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div id="search-results"
+                        class="hidden absolute top-full left-0 w-full bg-white shadow-xl rounded-b-md mt-1 z-50 border border-gray-100 max-h-80 overflow-y-auto">
+                    </div>
+                </div>
 
                 <div class="hidden md:flex items-center gap-6">
 
@@ -122,91 +140,74 @@
         </div>
     </footer>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input');
+            const resultsContainer = document.getElementById('search-results');
+            let debounceTimer;
 
-        function SearchBox() {
-            const [query, setQuery] = useState('');
-            const [results, setResults] = useState([]);
-            const [showResults, setShowResults] = useState(false);
+            // 1. 监听输入事件 (带防抖)
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
 
-            // 防抖搜索（可选优化，这里直接简单的 onChange 触发）
-            const handleSearch = async (e) => {
-                const val = e.target.value;
-                setQuery(val);
+                // 清除上一次的定时器
+                clearTimeout(debounceTimer);
 
-                if (val.trim().length > 0) {
+                // 如果输入为空，隐藏结果框
+                if (query.length === 0) {
+                    resultsContainer.classList.add('hidden');
+                    resultsContainer.innerHTML = '';
+                    return;
+                }
+
+                // 延迟 300ms 后执行搜索，防止请求过于频繁
+                debounceTimer = setTimeout(async () => {
                     try {
-                        // 请求后端 API
-                        const res = await fetch(`/api/course/search?q=${encodeURIComponent(val)}`);
+                        const res = await fetch(`/api/course/search?q=${encodeURIComponent(query)}`);
                         const json = await res.json();
-                        if (json.status === '0000') {
-                            setResults(json.data);
-                            setShowResults(true);
+
+                        if (json.status === '0000' && json.data.length > 0) {
+                            // 生成结果列表 HTML
+                            const html = json.data.map(course => `
+                            <a href="/course/${course._id}" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-50 flex items-center transition">
+                                <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                                    <img src="${course.image}" alt="${course.title}" class="h-full w-full object-cover" onerror="this.src='/images/placeholder.png'">
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-sm font-medium text-gray-900">${course.title}</div>
+                                    <div class="text-xs text-red-500">HK$${course.price}</div>
+                                </div>
+                            </a>
+                        `).join('');
+
+                            resultsContainer.innerHTML = html;
+                            resultsContainer.classList.remove('hidden');
+                        } else {
+                            // 无结果
+                            resultsContainer.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">未找到相关课程</div>';
+                            resultsContainer.classList.remove('hidden');
                         }
                     } catch (err) {
-                        console.error("搜索出错", err);
+                        console.error('搜索出错:', err);
                     }
-                } else {
-                    setResults([]);
-                    setShowResults(false);
+                }, 300);
+            });
+
+            // 2. 聚焦时如果框内有字，重新显示结果
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value.trim().length > 0 && resultsContainer.innerHTML !== '') {
+                    resultsContainer.classList.remove('hidden');
                 }
-            };
+            });
 
-            // 点击外部关闭下拉框 (简化版：鼠标离开区域关闭，或者点击链接关闭)
-
-            return (
-                <div className="relative w-full">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            className="w-full bg-gray-100 border-transparent focus:bg-white border focus:border-blue-500 rounded-md py-2 px-4 pl-10 focus:outline-none transition-colors"
-                            placeholder="<%= __('search_placeholder') %>"
-                            value={query}
-                            onChange={handleSearch}
-                            onFocus={() => query && setShowResults(true)}
-                            onBlur={() => setTimeout(() => setShowResults(false), 200)} // 延迟关闭以便点击链接
-                        />
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    {/* 搜索结果下拉面板 */}
-                    {showResults && results.length > 0 && (
-                        <div className="absolute top-full left-0 w-full bg-white shadow-xl rounded-b-md mt-1 z-50 border border-gray-100 max-h-80 overflow-y-auto">
-                            {results.map(course => (
-                                <a
-                                    key={course._id}
-                                    href={`/course/${course._id}`}
-                                    className="block px-4 py-3 hover:bg-gray-50 border-b border-gray-50 flex items-center transition"
-                                >
-                                    <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
-                                        <img src={course.image} alt={course.title} className="h-full w-full object-cover" />
-                                    </div>
-                                    <div className="ml-3">
-                                        <div className="text-sm font-medium text-gray-900">{course.title}</div>
-                                        <div className="text-xs text-red-500">HK${course.price}</div>
-                                    </div>
-                                </a>
-                            ))}
-                        </div>
-                    )}
-
-                    {showResults && results.length === 0 && query && (
-                        <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-b-md mt-1 z-50 p-4 text-center text-gray-500 text-sm">
-                            未找到相关课程
-                        </div>
-                    )}
-                </div>
-            );
-        }
-
-        // 挂载 React 组件
-        const root = ReactDOM.createRoot(document.getElementById('react_search_root'));
-        root.render(<SearchBox />);
+            // 3. 点击外部区域关闭下拉框
+            document.addEventListener('click', (e) => {
+                // 如果点击的不是输入框，也不是结果框内部
+                if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+                    resultsContainer.classList.add('hidden');
+                }
+            });
+        });
     </script>
 </body>
 
