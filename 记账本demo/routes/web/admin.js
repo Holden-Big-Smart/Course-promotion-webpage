@@ -55,10 +55,17 @@ router.post("/reg", async (req, res) => {
   }
 });
 
-// 登录页
+// ✅ 修改：登录页路由 (GET)
 router.get("/login", (req, res) => {
+  // 1. 核心修复：添加禁止缓存头
+  // 这会强制浏览器不缓存表单填写状态
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '-1');
+
   res.render("admin/login");
 });
+
 // 登录逻辑
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
