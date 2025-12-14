@@ -9,3 +9,5 @@ Thumbs.db
 
 # 如果是前端项目，通常也要忽略依赖包
 node_modules/
+
+readme.md

@@ -12,35 +12,35 @@
 
     <div class="bg-white p-8 rounded shadow-md w-96">
         <h2 class="text-2xl font-bold mb-6 text-center">管理员登录</h2>
-        
+
         <form action="/wokevfuitlkuxrla/login" method="POST" autocomplete="off" id="loginForm">
 
             <div class="mb-4">
-                <input type="text" name="username" placeholder="用户名" 
-                    class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500 transition" 
+                <input type="text" name="username" placeholder="用户名"
+                    class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500 transition"
                     autocomplete="off" required>
             </div>
 
             <div class="mb-6">
-                <input type="password" name="password" placeholder="密码" 
-                    class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500 transition" 
+                <input type="password" name="password" placeholder="密码"
+                    class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500 transition"
                     autocomplete="new-password" required>
             </div>
 
-            <button type="submit" 
+            <button type="submit"
                 class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition duration-200">
                 登录
             </button>
         </form>
 
-        <div class="mt-4 text-center">
+        <!-- <div class="mt-4 text-center">
             <a href="/wokevfuitlkuxrla/reg" class="text-sm text-blue-500 hover:text-blue-700">注册新管理员</a>
-        </div>
+        </div> -->
     </div>
 
     <script>
         // 监听页面显示事件 (包括从缓存/后退按钮加载的情况)
-        window.addEventListener('pageshow', function(event) {
+        window.addEventListener('pageshow', function (event) {
             // 获取表单
             var form = document.getElementById('loginForm');
             if (form) {
@@ -51,4 +51,5 @@
     </script>
 
 </body>
+
 </html>

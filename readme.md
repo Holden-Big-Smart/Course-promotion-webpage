@@ -41,3 +41,10 @@ users
 > db.users.deleteOne({ username: "测试测试测试" })
 { "acknowledged" : true, "deletedCount" : 1 }
 
+---
+当前账户密码
+test
+123
+
+---
+开关注册页
