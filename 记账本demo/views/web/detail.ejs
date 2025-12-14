@@ -21,9 +21,37 @@
                     <span class="font-bold text-lg">屯门妇联</span>
                 </a>
 
-                <div class="flex items-center space-x-4">
-                    <a href="/" class="text-sm text-gray-500 hover:text-gray-900">首页</a>
-                    <a href="/contact" class="text-sm text-gray-500 hover:text-gray-900">联系我们</a>
+                <div class="hidden md:flex items-center gap-6">
+
+                    <div class="flex space-x-6 text-sm font-medium">
+                        <a href="/" class="text-gray-700 hover:text-blue-600 transition">
+                            <%= __('nav_home') %>
+                        </a>
+                        <a href="/about" class="text-gray-700 hover:text-blue-600 transition">
+                            <%= __('nav_about') %>
+                        </a>
+                        <a href="/contact" class="text-gray-700 hover:text-blue-600 transition">
+                            <%= __('nav_contact') %>
+                        </a>
+                    </div>
+
+                    <div class="h-4 w-px bg-gray-300"></div>
+
+                    <div class="flex items-center gap-2 text-xs font-bold text-gray-600">
+                        <a href="/lang/zh-CN"
+                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-CN' ? 'bg-gray-100 text-black' : '' %>">
+                            简
+                        </a>
+                        <a href="/lang/zh-TW"
+                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-TW' ? 'bg-gray-100 text-black' : '' %>">
+                            繁
+                        </a>
+                        <a href="/lang/en"
+                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'en' ? 'bg-gray-100 text-black' : '' %>">
+                            En
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -139,7 +167,8 @@
                 <div class="mt-8">
                     <h3 class="text-sm font-medium text-gray-900">课程简介</h3>
                     <div
-                        class="mt-4 prose prose-sm text-gray-600 bg-gray-50 p-4 rounded-lg border border-gray-100 leading-relaxed whitespace-pre-wrap"><%= course.description || '暂无详细介绍' %>
+                        class="mt-4 prose prose-sm text-gray-600 bg-gray-50 p-4 rounded-lg border border-gray-100 leading-relaxed whitespace-pre-wrap">
+                        <%= course.description || '暂无详细介绍' %>
                     </div>
                 </div>
 
