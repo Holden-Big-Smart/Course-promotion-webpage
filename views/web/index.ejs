@@ -69,7 +69,8 @@
                     <%= __('section_hot') %>
                 </h2>
 
-                <div class="relative group">
+                <!-- 修改点1：移除此处的 group 类，避免全局触发 -->
+                <div class="relative">
                     <!-- 轮播容器 -->
                     <div id="carousel-container" class="flex overflow-x-auto gap-6 scrollbar-hide scroll-smooth pb-4 px-1 snap-x py-4">
                         <% if (hotCourses.length === 0) { %>
@@ -89,8 +90,9 @@
                                     </div>
 
                                     <!-- 海报区域 -->
-                                    <div class="w-full bg-gray-50 relative group cursor-pointer" onclick="window.location.href='/course/<%= course._id %>'">
-                                        <img src="<%= course.image %>" class="w-full h-auto object-contain transition duration-500 group-hover:scale-105" alt="<%= course.title %>">
+                                    <!-- 修改点2：使用具名组 group/hot 和 group-hover/hot 以隔离悬停效果 -->
+                                    <div class="w-full bg-gray-50 relative group/hot cursor-pointer" onclick="window.location.href='/course/<%= course._id %>'">
+                                        <img src="<%= course.image %>" class="w-full h-auto object-contain transition duration-500 group-hover/hot:scale-105" alt="<%= course.title %>">
                                     </div>
                                     
                                     <div class="p-4 bg-white flex flex-col flex-grow border-t border-gray-100">
