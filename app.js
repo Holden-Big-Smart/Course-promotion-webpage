@@ -79,6 +79,48 @@ app.use(
   })
 );
 
+// --- 全局配置中间件 (回答需求2, 3, 4) ---
+app.use((req, res, next) => {
+    // 1. 定义中心颜色配置 (需求2：在这里新增中心和颜色)
+    // 格式: '中心名称': 'Tailwind颜色类前缀'
+    // 例如: 'bg-green-600' (标签背景), 'border-green-600' (卡片边框)
+    res.locals.centerColors = {
+        '山景': 'emerald',  // 对应 bg-emerald-600, border-emerald-600
+        '湖碧': 'blue',     // 对应 bg-blue-600, border-blue-600
+        '湖翠': 'orange',     // 对应 bg-blue-600, border-blue-600
+        '田景': 'yellow',     // 对应 bg-blue-600, border-blue-600
+        '蝴蝶': 'pink',     // 对应 bg-blue-600, border-blue-600
+        '柏麗': 'purple',     // 对应 bg-blue-600, border-blue-600
+        // 在这里添加新中心，例如: '新中心': 'purple'
+    };
+
+    // 2. 定义状态判断函数 (需求3)
+    res.locals.getCourseStatus = (start, end) => {
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // 只比较日期，忽略时间
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+
+        if (now < startDate) return 'waiting';   // 等待中
+        if (now > endDate) return 'ended';       // 已结束
+        return 'running';                        // 进行中
+    };
+    
+    // 3. 辅助函数：格式化日期给 input[type="date"] 使用
+    res.locals.formatDateValue = (date) => {
+        if (!date) return '';
+        const d = new Date(date);
+        let month = '' + (d.getMonth() + 1);
+        let day = '' + d.getDate();
+        const year = d.getFullYear();
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        return [year, month, day].join('-');
+    };
+
+    next();
+});
+
 app.use("/api/course", courseApiRouter);
 app.use("/wokevfuitlkuxrla", adminRouter);
 app.use("/", indexRouter);
