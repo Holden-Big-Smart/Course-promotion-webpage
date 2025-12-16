@@ -140,7 +140,7 @@
                                     const status = getCourseStatus(course.startTime, course.endTime);
                                     %>
                                     <div
-                                        class="flex-shrink-0 w-80 md:w-96 snap-start bg-white rounded-xl shadow-lg border-2 <%= borderClass %> overflow-hidden hover:shadow-2xl transition-all duration-300 relative flex flex-col">
+                                        class="flex-shrink-0 w-80 md:w-64 snap-start bg-white rounded-xl shadow-lg border-2 <%= borderClass %> overflow-hidden hover:shadow-2xl transition-all duration-300 relative flex flex-col">
 
                                         <!-- 【书签】右上角中心标签 -->
                                         <div
@@ -170,10 +170,10 @@
                                                 </h3>
                                                 <% if(status==='waiting' ) { %>
                                                     <span
-                                                        class="inline-flex align-middle ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-xs font-bold rounded-md whitespace-nowrap">等待中</span>
+                                                        class="inline-flex align-middle ml-2 px-2 py-0.5 bg-green-100 text-green-800 border border-green-200 text-xs font-bold rounded-md whitespace-nowrap animate-pulse">报名中</span>
                                                     <% } else if (status==='running' ) { %>
                                                         <span
-                                                            class="inline-flex align-middle ml-2 px-2 py-0.5 bg-green-100 text-green-800 border border-green-200 text-xs font-bold rounded-md whitespace-nowrap animate-pulse">进行中</span>
+                                                            class="inline-flex align-middle ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-xs font-bold rounded-md whitespace-nowrap">进行中</span>
                                                         <% } else { %>
                                                             <span
                                                                 class="inline-flex align-middle ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 text-xs font-bold rounded-md whitespace-nowrap">已结束</span>
@@ -220,6 +220,9 @@
                         <button onclick="switchTab('activity')"
                             class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
                             data-target="activity">活动</button>
+                        <button onclick="switchTab('erb')"
+                            class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
+                            data-target="erb">ERB再培训</button>
                         <button onclick="switchTab('other')"
                             class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
                             data-target="other">其他</button>
@@ -271,10 +274,10 @@
                                         <!-- 【状态标签】紧跟标题右侧 -->
                                         <% if(status==='waiting' ) { %>
                                             <span
-                                                class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-[10px] font-bold rounded whitespace-nowrap">等待中</span>
+                                                class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-green-100 text-green-800 border border-green-200 text-[10px] font-bold rounded whitespace-nowrap animate-pulse">报名中</span>
                                             <% } else if (status==='running' ) { %>
                                                 <span
-                                                    class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-green-100 text-green-800 border border-green-200 text-[10px] font-bold rounded whitespace-nowrap animate-pulse">进行中</span>
+                                                    class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-[10px] font-bold rounded whitespace-nowrap">进行中</span>
                                                 <% } else { %>
                                                     <span
                                                         class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-gray-100 text-gray-500 border border-gray-200 text-[10px] font-bold rounded whitespace-nowrap">已结束</span>
@@ -301,6 +304,10 @@
                                 <div id="tab-activity"
                                     class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
                                     <% renderCards(groupActivity) %>
+                                </div>
+                                <div id="tab-erb"
+                                    class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                    <% renderCards(groupERB) %>
                                 </div>
                                 <div id="tab-other"
                                     class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">

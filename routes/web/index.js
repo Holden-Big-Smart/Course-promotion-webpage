@@ -12,11 +12,12 @@ router.get("/", async (req, res) => {
         .limit(8);
 
     // 2. 获取各个分组的最新课程
-    const [groupInterest, groupProf, groupActivity, groupOther] = await Promise.all([
+    const [groupInterest, groupProf, groupActivity, groupOther, groupERB] = await Promise.all([
         CourseModel.find({ group: "兴趣班组" }).sort({ startTime: -1 }).limit(8),
         CourseModel.find({ group: "专业课程" }).sort({ startTime: -1 }).limit(8),
         CourseModel.find({ group: "活动" }).sort({ startTime: -1 }).limit(8),
-        CourseModel.find({ group: "其他" }).sort({ startTime: -1 }).limit(8)
+        CourseModel.find({ group: "其他" }).sort({ startTime: -1 }).limit(8),
+        CourseModel.find({ group: "ERB再培训" }).sort({ startTime: -1 }).limit(8)
     ]);
 
     // 3. 渲染页面
@@ -25,7 +26,8 @@ router.get("/", async (req, res) => {
       groupInterest,
       groupProf,
       groupActivity,
-      groupOther
+      groupOther,
+      groupERB
     });
 
   } catch (err) {

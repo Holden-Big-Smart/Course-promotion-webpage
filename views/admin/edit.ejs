@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,27 +8,99 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        
-        .multi-select-wrapper { position: relative; }
-        .multi-display-box { min-height: 42px; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; cursor: pointer; background-color: white; }
-        .tag-chip { background-color: #dbeafe; color: #2563eb; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: flex; align-items: center; }
-        .tag-remove { margin-left: 4px; cursor: pointer; color: #1e40af; }
-        .dropdown-menu { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin-top: 4px; max-height: 200px; overflow-y: auto; z-index: 50; display: none; }
-        .dropdown-menu.show { display: block; }
-        .dropdown-item { padding: 8px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; }
-        .dropdown-item:hover { background-color: #f3f4f6; }
-        .dropdown-item.selected { background-color: #eff6ff; color: #2563eb; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .multi-select-wrapper {
+            position: relative;
+        }
+
+        .multi-display-box {
+            min-height: 42px;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            cursor: pointer;
+            background-color: white;
+        }
+
+        .tag-chip {
+            background-color: #dbeafe;
+            color: #2563eb;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .tag-remove {
+            margin-left: 4px;
+            cursor: pointer;
+            color: #1e40af;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 50;
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .dropdown-item.selected {
+            background-color: #eff6ff;
+            color: #2563eb;
+        }
     </style>
 </head>
+
 <body class="bg-gray-100 font-sans min-h-screen">
 
     <nav class="bg-gray-800 text-white shadow-lg h-16 flex-shrink-0 z-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex justify-between items-center">
             <div class="flex items-center">
-                <a href="/wokevfuitlkuxrla/dashboard" class="text-gray-300 hover:text-white mr-4"><i class="fas fa-arrow-left"></i> 返回</a>
+                <a href="/wokevfuitlkuxrla/dashboard" class="text-gray-300 hover:text-white mr-4"><i
+                        class="fas fa-arrow-left"></i> 返回</a>
                 <span class="text-xl font-bold tracking-wider">编辑课程</span>
             </div>
         </div>
@@ -38,52 +111,64 @@
             <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between">
                 <h2 class="text-lg font-bold text-blue-700"><i class="fas fa-edit mr-2"></i>修改课程信息</h2>
             </div>
-            
+
             <div class="p-6">
-                <form action="/wokevfuitlkuxrla/course/update" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="/wokevfuitlkuxrla/course/update" method="POST" enctype="multipart/form-data"
+                    class="space-y-6">
                     <input type="hidden" name="id" value="<%= course._id %>">
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">课程名称</label>
-                        <input type="text" name="title" value="<%= course.title %>" class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
+                        <input type="text" name="title" value="<%= course.title %>"
+                            class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                            required>
                     </div>
 
                     <!-- 课程分组 -->
                     <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
                         <label class="block text-sm font-bold text-gray-700 mb-2">所属分组</label>
                         <div class="flex flex-wrap gap-4">
-                            <% ["兴趣班组", "专业课程", "活动", "其他"].forEach((item) => { %>
+                            <% ["兴趣班组", "专业课程" , "活动" , "其他" , "ERB再培训" ].forEach((item)=> { %>
                                 <label class="inline-flex items-center cursor-pointer">
-                                    <input type="radio" name="group" value="<%= item %>" class="form-radio text-blue-600 h-4 w-4" <%= course.group === item ? 'checked' : '' %>>
-                                    <span class="ml-2 text-sm text-gray-700"><%= item %></span>
+                                    <input type="radio" name="group" value="<%= item %>"
+                                        class="form-radio text-blue-600 h-4 w-4" <%=course.group===item ? 'checked' : ''
+                                        %>>
+                                    <span class="ml-2 text-sm text-gray-700">
+                                        <%= item %>
+                                    </span>
                                 </label>
-                            <% }) %>
+                                <% }) %>
                         </div>
                     </div>
 
                     <!-- 课程中心 (下拉框) & 推荐 (复选框) -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                           <label class="block text-sm font-bold text-gray-700 mb-1">课程中心</label>
-                           <select name="center" class="w-full border border-gray-300 rounded-lg p-2 text-sm bg-white">
-                               <% Object.keys(centerColors).forEach((name) => { %>
-                                   <option value="<%= name %>" <%= course.center === name ? 'selected' : '' %>><%= name %></option>
-                               <% }) %>
-                           </select>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">课程中心</label>
+                            <select name="center" class="w-full border border-gray-300 rounded-lg p-2 text-sm bg-white">
+                                <% Object.keys(centerColors).forEach((name)=> { %>
+                                    <option value="<%= name %>" <%=course.center===name ? 'selected' : '' %>><%= name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
                         </div>
-                        
+
                         <div class="flex items-center pt-6">
-                           <label class="inline-flex items-center cursor-pointer select-none">
-                               <input type="checkbox" name="isRecommended" class="form-checkbox h-5 w-5 text-red-600 rounded focus:ring-red-500" <%= course.isRecommended ? 'checked' : '' %>>
-                               <span class="ml-2 text-sm font-bold text-gray-700">设为指定推荐课程 <i class="fas fa-fire text-red-500 ml-1"></i></span>
-                           </label>
+                            <label class="inline-flex items-center cursor-pointer select-none">
+                                <input type="checkbox" name="isRecommended"
+                                    class="form-checkbox h-5 w-5 text-red-600 rounded focus:ring-red-500"
+                                    <%=course.isRecommended ? 'checked' : '' %>>
+                                <span class="ml-2 text-sm font-bold text-gray-700">设为指定推荐课程 <i
+                                        class="fas fa-fire text-red-500 ml-1"></i></span>
+                            </label>
                         </div>
-                   </div>
+                    </div>
 
                     <div class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">价格 (HK$)</label>
-                            <input type="number" name="price" value="<%= course.price %>" class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
+                            <input type="number" name="price" value="<%= course.price %>"
+                                class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
                         </div>
 
                         <div class="multi-select-wrapper" id="category-select">
@@ -99,11 +184,13 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">开课时间</label>
-                            <input type="date" name="startTime" value="<%= formatDateValue(course.startTime) %>" class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
+                            <input type="date" name="startTime" value="<%= formatDateValue(course.startTime) %>"
+                                class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">结课时间</label>
-                            <input type="date" name="endTime" value="<%= formatDateValue(course.endTime) %>" class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
+                            <input type="date" name="endTime" value="<%= formatDateValue(course.endTime) %>"
+                                class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
                         </div>
                     </div>
 
@@ -111,17 +198,23 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">上课时间</label>
                         <div class="flex flex-wrap gap-2">
                             <% ['一','二','三','四','五','六','日'].forEach(day=> { %>
-                                <label class="inline-flex items-center bg-gray-50 border px-0.5 py-1 rounded cursor-pointer hover:bg-gray-100">
-                                    <input type="checkbox" name="weekDay" value="星期<%= day %>" class="form-checkbox h-4 w-4 text-blue-600" <%= course.weekDay.includes('星期'+day) ? 'checked' : '' %>>
-                                    <span class="ml-1 text-sm text-gray-700"><%= day %></span>
+                                <label
+                                    class="inline-flex items-center bg-gray-50 border px-0.5 py-1 rounded cursor-pointer hover:bg-gray-100">
+                                    <input type="checkbox" name="weekDay" value="星期<%= day %>"
+                                        class="form-checkbox h-4 w-4 text-blue-600" <%=course.weekDay.includes('星期'+day)
+                                        ? 'checked' : '' %>>
+                                    <span class="ml-1 text-sm text-gray-700">
+                                        <%= day %>
+                                    </span>
                                 </label>
-                            <% }) %>
+                                <% }) %>
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">课程简介</label>
-                        <textarea name="description" rows="5" class="w-full border border-gray-300 rounded-lg p-2 text-sm"><%= course.description %></textarea>
+                        <textarea name="description" rows="5"
+                            class="w-full border border-gray-300 rounded-lg p-2 text-sm"><%= course.description %></textarea>
                     </div>
 
                     <div>
@@ -130,12 +223,15 @@
                             <img src="<%= course.image %>" class="h-40 w-auto object-contain border rounded p-1">
                         </div>
                         <label class="block text-sm text-gray-500 mb-1">更换海报 (可选)</label>
-                        <input type="file" name="image" accept="image/*" class="w-full border border-gray-300 rounded-lg p-2 text-sm bg-gray-50">
+                        <input type="file" name="image" accept="image/*"
+                            class="w-full border border-gray-300 rounded-lg p-2 text-sm bg-gray-50">
                     </div>
 
                     <div class="flex gap-4 mt-6">
-                        <a href="/wokevfuitlkuxrla/dashboard" class="w-1/3 bg-gray-500 text-white font-bold py-2.5 rounded-lg hover:bg-gray-600 text-center transition">取消</a>
-                        <button type="submit" class="w-2/3 bg-blue-600 text-white font-bold py-2.5 rounded-lg hover:bg-blue-700 shadow-md transition">保存修改</button>
+                        <a href="/wokevfuitlkuxrla/dashboard"
+                            class="w-1/3 bg-gray-500 text-white font-bold py-2.5 rounded-lg hover:bg-gray-600 text-center transition">取消</a>
+                        <button type="submit"
+                            class="w-2/3 bg-blue-600 text-white font-bold py-2.5 rounded-lg hover:bg-blue-700 shadow-md transition">保存修改</button>
                     </div>
                 </form>
             </div>
@@ -143,14 +239,14 @@
     </div>
 
     <script>
-        var serverCategories = <%- (typeof categories !== 'undefined' && categories) ? JSON.stringify(categories) : "[]" %>;
+        var serverCategories = <% - (typeof categories !== 'undefined' && categories) ? JSON.stringify(categories) : "[]" %>;
         // 预选中的分类
-        var preSelected = <%- JSON.stringify(course.category || []) %>;
+        var preSelected = <% - JSON.stringify(course.category || []) %>;
         var state = { 'category-select': { selected: preSelected, options: serverCategories } };
 
         document.addEventListener('DOMContentLoaded', function () {
             renderOptions('category-select');
-            
+
             document.addEventListener('click', function (e) {
                 var wrapper = document.getElementById('category-select');
                 if (!wrapper.contains(e.target)) {
@@ -207,4 +303,5 @@
         function toggleDropdown(wrapperId) { document.getElementById(wrapperId).querySelector('.dropdown-menu').classList.toggle('show'); }
     </script>
 </body>
+
 </html>

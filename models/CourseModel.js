@@ -9,7 +9,7 @@ const CourseSchema = new Schema({
   group: { 
     type: String, 
     default: "兴趣班组", 
-    enum: ["兴趣班组", "专业课程", "活动", "其他"] 
+    enum: ["兴趣班组", "专业课程", "活动", "其他", "ERB再培训"]
   },
   
   center: { 
