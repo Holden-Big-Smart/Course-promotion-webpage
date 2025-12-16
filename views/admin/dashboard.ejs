@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>课程管理后台</title>
+    <title>課程管理後台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -103,10 +103,10 @@
     <nav class="bg-gray-800 text-white shadow-lg h-16 flex-shrink-0 z-20">
         <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex justify-between items-center">
             <div class="flex items-center">
-                <span class="text-xl font-bold tracking-wider">课程管理后台</span>
+                <span class="text-xl font-bold tracking-wider">課程管理後台</span>
             </div>
             <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-300">欢迎, <%= user.username %></span>
+                <span class="text-sm text-gray-300">歡迎, <%= user.username %></span>
                 <a href="/" class="text-sm text-gray-300 hover:text-white transition">查看前台</a>
                 <button onclick="handleLogout()"
                     class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded text-sm transition cursor-pointer">退出</button>
@@ -120,7 +120,7 @@
             <!-- 1. 发布表单 -->
             <div class="bg-white rounded-xl shadow-md flex flex-col h-full overflow-hidden">
                 <div class="p-4 border-b border-gray-100 bg-gray-50">
-                    <h2 class="text-lg font-bold text-green-700"><i class="fas fa-plus-circle mr-2"></i>发布新课程</h2>
+                    <h2 class="text-lg font-bold text-green-700"><i class="fas fa-plus-circle mr-2"></i>發布新課程</h2>
                 </div>
 
                 <div class="p-5 overflow-y-auto custom-scrollbar flex-grow">
@@ -128,17 +128,17 @@
                         class="space-y-4">
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">课程名称</label>
-                            <input type="text" name="title" placeholder="请输入课程名称"
+                            <label class="block text-sm font-medium text-gray-700 mb-1">課程名稱</label>
+                            <input type="text" name="title" placeholder="請輸入課程名稱"
                                 class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none transition"
                                 required>
                         </div>
 
                         <!-- 课程分组 (单选) -->
                         <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                            <label class="block text-sm font-bold text-gray-700 mb-2">所属分组</label>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">所屬分組</label>
                             <div class="flex flex-wrap gap-1">
-                                <% ["兴趣班组", "专业课程" , "活动" , "其他" , "ERB再培训" ].forEach((item, index)=> { %>
+                                <% ["興趣班組", "專業課程" , "活動" , "其他" , "ERB再訓練"].forEach((item, index)=> { %>
                                     <label class="inline-flex items-center cursor-pointer">
                                         <input type="radio" name="group" value="<%= item %>"
                                             class="form-radio text-green-600 h-4 w-4" <%=index===0 ? 'checked' : '' %>>
@@ -153,7 +153,7 @@
                         <!-- 课程中心 (下拉框) & 推荐 (复选框) -->
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">课程中心</label>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">課程中心</label>
                                 <select name="center"
                                     class="w-full border border-gray-300 rounded-lg p-2 text-sm bg-white">
                                     <% Object.keys(centerColors).forEach((name)=> { %>
@@ -168,7 +168,7 @@
                                 <label class="inline-flex items-center cursor-pointer select-none">
                                     <input type="checkbox" name="isRecommended"
                                         class="form-checkbox h-5 w-5 text-red-600 rounded focus:ring-red-500">
-                                    <span class="ml-2 text-sm font-bold text-gray-700">设为指定推荐课程 <i
+                                    <span class="ml-2 text-sm font-bold text-gray-700">設為指定推薦課程 <i
                                             class="fas fa-fire text-red-500 ml-1"></i></span>
                                 </label>
                             </div>
@@ -176,22 +176,22 @@
 
                         <div class="grid grid-cols-1 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">价格 (HK$)</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">價格 (HK$)</label>
                                 <input type="number" name="price" placeholder="0"
                                     class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
                             </div>
 
                             <div class="multi-select-wrapper" id="category-select">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">分类标签 (可多选)</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">分類標籤 (可多重選擇)</label>
                                 <div class="multi-display-box" onclick="toggleDropdown('category-select')">
-                                    <span class="text-gray-400 text-sm ml-1 placeholder-text">点击选择...</span>
+                                    <span class="text-gray-400 text-sm ml-1 placeholder-text">點選選擇...</span>
                                 </div>
                                 <input type="hidden" name="category" value="">
                                 <div class="dropdown-menu custom-scrollbar">
                                     <div id="category-options-container"></div>
                                     <div onclick="addNewCategory(event)"
                                         class="p-2 text-sm text-green-600 cursor-pointer hover:bg-green-50 border-t border-gray-100 text-center font-bold">
-                                        <i class="fas fa-plus"></i> 新建分类
+                                        <i class="fas fa-plus"></i> 新建分類
                                     </div>
                                 </div>
                             </div>
@@ -199,19 +199,19 @@
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">开课时间</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">開課時間</label>
                                 <input type="date" name="startTime"
                                     class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">结课时间</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">結課時間</label>
                                 <input type="date" name="endTime"
                                     class="w-full border border-gray-300 rounded-lg p-2 text-sm" required>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">上课时间</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">上課時間</label>
                             <div class="flex flex-wrap gap-2">
                                 <% ['一','二','三','四','五','六','日'].forEach(day=> { %>
                                     <label
@@ -227,13 +227,13 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">课程简介</label>
-                            <textarea name="description" rows="3" placeholder="课程详细介绍..."
+                            <label class="block text-sm font-medium text-gray-700 mb-1">課程簡介</label>
+                            <textarea name="description" rows="3" placeholder="課程詳細介紹..."
                                 class="w-full border border-gray-300 rounded-lg p-2 text-sm"></textarea>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">课程海报</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">課程海報</label>
                             <input type="file" name="image" id="imageInput" accept="image/*"
                                 class="w-full border border-gray-300 rounded-lg p-2 text-sm bg-gray-50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
                                 required>
@@ -241,7 +241,7 @@
 
                         <button type="submit"
                             class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-green-700 shadow-md transition duration-200 mt-4">
-                            <i class="fas fa-paper-plane mr-2"></i>发布课程
+                            <i class="fas fa-paper-plane mr-2"></i>發布課程
                         </button>
                     </form>
                 </div>
@@ -251,13 +251,13 @@
             <div
                 class="bg-white rounded-xl shadow-md flex flex-col h-full overflow-hidden border-2 border-dashed border-gray-200">
                 <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
-                    <h2 class="text-lg font-bold text-blue-700"><i class="fas fa-image mr-2"></i>海报预览</h2>
-                    <span class="text-xs text-gray-400">实时显示上传图片</span>
+                    <h2 class="text-lg font-bold text-blue-700"><i class="fas fa-image mr-2"></i>海報預覽</h2>
+                    <span class="text-xs text-gray-400">實時顯示上傳圖片</span>
                 </div>
                 <div class="flex-grow flex items-center justify-center bg-gray-100 p-4 relative overflow-hidden group">
                     <div id="placeholderView" class="text-center text-gray-400">
                         <i class="fas fa-images text-6xl mb-4"></i>
-                        <p class="text-sm">请在左侧选择图片</p>
+                        <p class="text-sm">請在左側選擇圖片</p>
                     </div>
                     <img id="previewImg" src="#" alt="Preview"
                         class="hidden max-h-full max-w-full object-contain shadow-2xl rounded-lg transition-transform duration-300 group-hover:scale-105">
@@ -265,7 +265,7 @@
                 <div class="p-4 bg-white border-t border-gray-100">
                     <div class="flex justify-between items-end">
                         <div class="w-full">
-                            <h3 id="previewTitle" class="font-bold text-gray-800 text-lg truncate">课程标题预览</h3>
+                            <h3 id="previewTitle" class="font-bold text-gray-800 text-lg truncate">課程標題預覽</h3>
                             <p id="previewPrice" class="text-red-600 font-bold text-xl mt-1">HK$ --</p>
                         </div>
                     </div>
@@ -276,14 +276,14 @@
             <div class="bg-white rounded-xl shadow-md flex flex-col h-full overflow-hidden">
                 <div
                     class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center z-10 sticky top-0">
-                    <h2 class="text-lg font-bold text-gray-800"><i class="fas fa-list-ul mr-2"></i>已发布 (<%=
+                    <h2 class="text-lg font-bold text-gray-800"><i class="fas fa-list-ul mr-2"></i>已發布 (<%=
                             courses.length %>)</h2>
                 </div>
                 <div class="flex-grow overflow-y-auto custom-scrollbar p-0">
                     <% if (courses.length===0) { %>
                         <div class="flex flex-col items-center justify-center h-full text-gray-400">
                             <i class="fas fa-inbox text-4xl mb-2"></i>
-                            <p>暂无课程</p>
+                            <p>暫無課程</p>
                         </div>
                         <% } else { %>
                             <div class="flex flex-col">
@@ -306,7 +306,7 @@
                                                         class="text-blue-500 hover:text-blue-700 p-1"><i
                                                             class="fas fa-edit"></i></a>
                                                     <a href="/wokevfuitlkuxrla/course/delete/<%= course._id %>"
-                                                        onclick="return confirm('确定删除吗？')"
+                                                        onclick="return confirm('確定刪除嗎？')"
                                                         class="text-red-500 hover:text-red-700 p-1"><i
                                                             class="fas fa-trash"></i></a>
                                                 </div>
@@ -324,7 +324,7 @@
                                                 </span>
                                                 <% if(course.isRecommended) { %>
                                                     <span
-                                                        class="bg-red-50 text-red-600 px-1.5 py-0.5 rounded border border-red-200">推荐</span>
+                                                        class="bg-red-50 text-red-600 px-1.5 py-0.5 rounded border border-red-200">推薦</span>
                                                     <% } %>
                                             </div>
                                         </div>
@@ -369,7 +369,7 @@
                 }
             });
 
-            titleInput.addEventListener('input', function (e) { previewTitle.textContent = e.target.value || '课程标题预览'; });
+            titleInput.addEventListener('input', function (e) { previewTitle.textContent = e.target.value || '課程標題預覽'; });
             priceInput.addEventListener('input', function (e) { previewPrice.textContent = 'HK$' + (e.target.value || '--'); });
 
             document.addEventListener('click', function (e) {
@@ -416,7 +416,7 @@
             input.value = state[wrapperId].selected.join(',');
             displayBox.innerHTML = '';
             if (state[wrapperId].selected.length === 0) {
-                displayBox.innerHTML = '<span class="text-gray-400 text-sm ml-1 placeholder-text">点击选择...</span>';
+                displayBox.innerHTML = '<span class="text-gray-400 text-sm ml-1 placeholder-text">點選選擇...</span>';
             } else {
                 state[wrapperId].selected.forEach(function (val) {
                     var tag = document.createElement('span');
@@ -432,13 +432,13 @@
 
         function handleLogout() {
             fetch('/wokevfuitlkuxrla/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
-                .then(response => { if (response.ok) window.location.replace('/wokevfuitlkuxrla/login'); else alert('退出失败'); })
+                .then(response => { if (response.ok) window.location.replace('/wokevfuitlkuxrla/login'); else alert('退出失敗'); })
                 .catch(error => window.location.replace('/wokevfuitlkuxrla/login'));
         }
 
         async function addNewCategory(e) {
             e.stopPropagation();
-            var name = prompt("请输入新分类标签名称:");
+            var name = prompt("請輸入新分類標籤名稱:");
             if (!name) return;
             try {
                 var res = await fetch('/wokevfuitlkuxrla/category/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name }) });
@@ -447,13 +447,13 @@
                     state['category-select'].options.push(json.data);
                     state['category-select'].selected.push(json.data.name);
                     renderOptions('category-select');
-                } else alert(json.msg || '添加失败');
+                } else alert(json.msg || '新增失敗');
             } catch (err) { console.error(err); }
         }
 
         async function deleteCategory(e, id, name) {
             e.stopPropagation();
-            if (!confirm('确定要删除标签【' + name + '】吗？')) return;
+            if (!confirm('確定要刪除標籤【' + name + '】嗎？')) return;
             try {
                 var res = await fetch('/wokevfuitlkuxrla/category/delete/' + id, { method: 'DELETE' });
                 var json = await res.json();
@@ -461,8 +461,8 @@
                     state['category-select'].options = state['category-select'].options.filter(function (c) { return c._id !== id; });
                     state['category-select'].selected = state['category-select'].selected.filter(function (s) { return s !== name; });
                     renderOptions('category-select');
-                } else alert('删除失败');
-            } catch (err) { alert('网络错误'); }
+                } else alert('刪除失敗');
+            } catch (err) { alert('網路錯誤'); }
         }
     </script>
 </body>
