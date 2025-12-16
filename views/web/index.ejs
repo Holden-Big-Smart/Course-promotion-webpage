@@ -4,87 +4,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>屯門婦聯 - 課程宣傳</title>
+    <title>屯門婦聯山景中心 - 課程宣傳</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>
         // 配置 Tailwind 颜色以支持动态类名
     </script>
     <style>
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
         /* 书签文字竖排样式 */
-        .vertical-text { 
-            writing-mode: vertical-lr; 
-            text-orientation: upright; 
-            letter-spacing: 2px; 
+        .vertical-text {
+            writing-mode: vertical-lr;
+            text-orientation: upright;
+            letter-spacing: 2px;
             font-family: sans-serif;
         }
 
         /* 标签页过渡动画 - 核心修复 */
-        .tab-content { 
-            display: none !important; /* 强制隐藏，防止 Tailwind 'grid' 类导致的占位问题 */
-            opacity: 0; 
-            transition: opacity 0.3s ease-in-out; 
+        .tab-content {
+            display: none !important;
+            /* 强制隐藏，防止 Tailwind 'grid' 类导致的占位问题 */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
         }
-        .tab-content.active { 
-            display: grid !important; /* 激活时强制显示为 grid */
-            opacity: 1; 
+
+        .tab-content.active {
+            display: grid !important;
+            /* 激活时强制显示为 grid */
+            opacity: 1;
         }
     </style>
 </head>
 
 <body class="bg-gray-50 flex flex-col min-h-screen">
 
+    <!-- Navigation -->
     <nav class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
 
                 <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='/'">
-                    <img class="h-10 w-auto"
-                        src="https://xmauez-hk.myshopify.com/cdn/shop/files/logo.png?height=36&v=1764654657"
-                        alt="Logo" />
+                    <img class="h-10 w-auto" src="/images/site_logo.webp" alt="Logo" />
                 </div>
 
-                <div id="react_search_root" class="flex-1 max-w-lg mx-4 md:mx-8"></div>
-
-                <div class="hidden md:flex items-center gap-6">
-
-                    <div class="flex space-x-6 text-sm font-medium">
-                        <a href="/" class="text-gray-700 hover:text-blue-600 transition">
-                            <%= __('nav_home') %>
-                        </a>
-                        <a href="/about" class="text-gray-700 hover:text-blue-600 transition">
-                            <%= __('nav_about') %>
-                        </a>
-                        <a href="/contact" class="text-gray-700 hover:text-blue-600 transition">
-                            <%= __('nav_contact') %>
-                        </a>
+                <!-- 搜索框区域 -->
+                <div class="flex-1 max-w-lg mx-4 md:mx-8 relative group">
+                    <div class="relative">
+                        <input type="text" id="search-input"
+                            class="w-full bg-gray-100 border-transparent focus:bg-white border focus:border-blue-500 rounded-md py-2 px-4 pl-10 focus:outline-none transition-colors"
+                            placeholder="<%= __('search_placeholder') %>" autocomplete="off" />
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
                     </div>
 
-                    <div class="h-4 w-px bg-gray-300"></div>
-
-                    <div class="flex items-center gap-2 text-xs font-bold text-gray-600">
-                        <a href="/lang/zh-CN"
-                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-CN' ? 'bg-gray-100 text-black' : '' %>">
-                            简
-                        </a>
-                        <a href="/lang/zh-TW"
-                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-TW' ? 'bg-gray-100 text-black' : '' %>">
-                            繁
-                        </a>
-                        <a href="/lang/en"
-                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'en' ? 'bg-gray-100 text-black' : '' %>">
-                            En
-                        </a>
+                    <div id="search-results"
+                        class="hidden absolute top-full left-0 w-full bg-white shadow-xl rounded-b-md mt-1 z-50 border border-gray-100 max-h-80 overflow-y-auto">
                     </div>
+                </div>
 
+                <div class="flex space-x-6 text-sm font-medium">
+                    <a href="/" class="text-gray-700 hover:text-blue-600 transition">
+                        <%= __('nav_home') %>
+                    </a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-600 transition">
+                        <%= __('nav_about') %>
+                    </a>
+                    <a href="/contact" class="text-gray-700 hover:text-blue-600 transition">
+                        <%= __('nav_contact') %>
+                    </a>
+                </div>
+
+                <div class="flex items-center gap-2 text-xs font-bold text-gray-600">
+                    <a href="/lang/zh-CN"
+                        class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-CN' ? 'bg-gray-100 text-black' : '' %>">
+                        简
+                    </a>
+                    <a href="/lang/zh-TW"
+                        class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-TW' ? 'bg-gray-100 text-black' : '' %>">
+                        繁
+                    </a>
+                    <a href="/lang/en"
+                        class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'en' ? 'bg-gray-100 text-black' : '' %>">
+                        En
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
-
     <div class="relative bg-gray-900 h-64">
         <div class="absolute inset-0">
             <img class="w-full h-full object-cover opacity-60" src="/images/home_banner.webp" alt="Banner">
@@ -113,62 +128,80 @@
                 <!-- 修改点1：移除此处的 group 类，避免全局触发 -->
                 <div class="relative">
                     <!-- 轮播容器 -->
-                    <div id="carousel-container" class="flex overflow-x-auto gap-6 scrollbar-hide scroll-smooth pb-4 px-1 snap-x py-4">
-                        <% if (hotCourses.length === 0) { %>
+                    <div id="carousel-container"
+                        class="flex overflow-x-auto gap-6 scrollbar-hide scroll-smooth pb-4 px-1 snap-x py-4">
+                        <% if (hotCourses.length===0) { %>
                             <div class="w-full text-center py-10 text-gray-400">暂无热门课程</div>
-                        <% } else { %>
-                            <% hotCourses.forEach(course => { 
-                                const colorKey = centerColors[course.center] || 'gray';
-                                const labelBg = `bg-${colorKey}-600`;
-                                const borderClass = `border-${colorKey}-600`;
-                                const status = getCourseStatus(course.startTime, course.endTime);
-                            %>
-                                <div class="flex-shrink-0 w-80 md:w-64 snap-start bg-white rounded-xl shadow-lg border-2 <%= borderClass %> overflow-hidden hover:shadow-2xl transition-all duration-300 relative flex flex-col">
-                                    
-                                    <!-- 【书签】右上角中心标签 -->
-                                    <div class="absolute top-0 right-4 <%= labelBg %> text-white w-8 pt-3 pb-4 rounded-b-lg z-20 shadow-md flex justify-center">
-                                        <span class="text-xs font-bold vertical-text leading-none"><%= course.center %></span>
-                                    </div>
+                            <% } else { %>
+                                <% hotCourses.forEach(course=> {
+                                    const colorKey = centerColors[course.center] || 'gray';
+                                    const labelBg = `bg-${colorKey}-600`;
+                                    const borderClass = `border-${colorKey}-600`;
+                                    const status = getCourseStatus(course.startTime, course.endTime);
+                                    %>
+                                    <div
+                                        class="flex-shrink-0 w-80 md:w-96 snap-start bg-white rounded-xl shadow-lg border-2 <%= borderClass %> overflow-hidden hover:shadow-2xl transition-all duration-300 relative flex flex-col">
 
-                                    <!-- 海报区域 -->
-                                    <!-- 修改点2：使用具名组 group/hot 和 group-hover/hot 以隔离悬停效果 -->
-                                    <div class="w-full bg-gray-50 relative group/hot cursor-pointer" onclick="window.location.href='/course/<%= course._id %>'">
-                                        <img src="<%= course.image %>" class="w-full h-auto object-contain transition duration-500 group-hover/hot:scale-105" alt="<%= course.title %>">
-                                    </div>
-                                    
-                                    <div class="p-4 bg-white flex flex-col flex-grow border-t border-gray-100">
-                                        <!-- 标题 + 状态 -->
-                                        <div class="mb-3">
-                                            <h3 class="text-lg font-bold text-gray-900 inline align-middle leading-snug hover:text-red-600 transition">
-                                                <a href="/course/<%= course._id %>"><%= course.title %></a>
-                                            </h3>
-                                            <% if(status === 'waiting') { %>
-                                                <span class="inline-flex align-middle ml-2 px-2 py-0.5 bg-yellow-100 text-green-800 border border-yellow-200 text-xs font-bold rounded-md whitespace-nowrap animate-pulse">报名中</span>
-                                            <% } else if (status === 'running') { %>
-                                                <span class="inline-flex align-middle ml-2 px-2 py-0.5 bg-green-100 text-yellow-800 border border-green-200 text-xs font-bold rounded-md whitespace-nowrap">进行中</span>
-                                            <% } else { %>
-                                                <span class="inline-flex align-middle ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 text-xs font-bold rounded-md whitespace-nowrap">已结束</span>
-                                            <% } %>
+                                        <!-- 【书签】右上角中心标签 -->
+                                        <div
+                                            class="absolute top-0 right-4 <%= labelBg %> text-white w-8 pt-3 pb-4 rounded-b-lg z-20 shadow-md flex justify-center">
+                                            <span class="text-xs font-bold vertical-text leading-none">
+                                                <%= course.center %>
+                                            </span>
                                         </div>
 
-                                        <!-- 底部价格与按钮 -->
-                                        <div class="flex justify-between items-center mt-auto">
-                                            <span class="text-red-600 font-bold text-xl">HK$ <%= course.price %></span>
-                                            <a href="/course/<%= course._id %>" class="text-white bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded-full text-sm font-medium transition shadow-sm">
-                                                查看详情
-                                            </a>
+                                        <!-- 海报区域 -->
+                                        <!-- 修改点2：使用具名组 group/hot 和 group-hover/hot 以隔离悬停效果 -->
+                                        <div class="w-full bg-gray-50 relative group/hot cursor-pointer"
+                                            onclick="window.location.href='/course/<%= course._id %>'">
+                                            <img src="<%= course.image %>"
+                                                class="w-full h-auto object-contain transition duration-500 group-hover/hot:scale-105"
+                                                alt="<%= course.title %>">
+                                        </div>
+
+                                        <div class="p-4 bg-white flex flex-col flex-grow border-t border-gray-100">
+                                            <!-- 标题 + 状态 -->
+                                            <div class="mb-3">
+                                                <h3
+                                                    class="text-lg font-bold text-gray-900 inline align-middle leading-snug hover:text-red-600 transition">
+                                                    <a href="/course/<%= course._id %>">
+                                                        <%= course.title %>
+                                                    </a>
+                                                </h3>
+                                                <% if(status==='waiting' ) { %>
+                                                    <span
+                                                        class="inline-flex align-middle ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-xs font-bold rounded-md whitespace-nowrap">等待中</span>
+                                                    <% } else if (status==='running' ) { %>
+                                                        <span
+                                                            class="inline-flex align-middle ml-2 px-2 py-0.5 bg-green-100 text-green-800 border border-green-200 text-xs font-bold rounded-md whitespace-nowrap animate-pulse">进行中</span>
+                                                        <% } else { %>
+                                                            <span
+                                                                class="inline-flex align-middle ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 text-xs font-bold rounded-md whitespace-nowrap">已结束</span>
+                                                            <% } %>
+                                            </div>
+
+                                            <!-- 底部价格与按钮 -->
+                                            <div class="flex justify-between items-center mt-auto">
+                                                <span class="text-red-600 font-bold text-xl">HK$ <%= course.price %>
+                                                </span>
+                                                <a href="/course/<%= course._id %>"
+                                                    class="text-white bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded-full text-sm font-medium transition shadow-sm">
+                                                    查看详情
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            <% }) %>
-                        <% } %>
+                                    <% }) %>
+                                        <% } %>
                     </div>
 
                     <!-- 轮播控制按钮 -->
-                    <button id="scroll-left" class="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 bg-white/90 p-3 rounded-full shadow-lg text-gray-800 hover:text-red-600 hover:scale-110 transition hidden md:block z-30">
+                    <button id="scroll-left"
+                        class="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 bg-white/90 p-3 rounded-full shadow-lg text-gray-800 hover:text-red-600 hover:scale-110 transition hidden md:block z-30">
                         <i class="fas fa-chevron-left text-xl"></i>
                     </button>
-                    <button id="scroll-right" class="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 bg-white/90 p-3 rounded-full shadow-lg text-gray-800 hover:text-red-600 hover:scale-110 transition hidden md:block z-30">
+                    <button id="scroll-right"
+                        class="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 bg-white/90 p-3 rounded-full shadow-lg text-gray-800 hover:text-red-600 hover:scale-110 transition hidden md:block z-30">
                         <i class="fas fa-chevron-right text-xl"></i>
                     </button>
                 </div>
@@ -178,79 +211,101 @@
             <div>
                 <div class="flex justify-center mb-10">
                     <div class="inline-flex bg-gray-200 rounded-full p-1 shadow-inner">
-                        <button onclick="switchTab('interest')" class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none active bg-white shadow text-blue-600" data-target="interest">兴趣班组</button>
-                        <button onclick="switchTab('prof')" class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none" data-target="prof">专业课程</button>
-                        <button onclick="switchTab('activity')" class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none" data-target="activity">活动</button>
-                        <button onclick="switchTab('other')" class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none" data-target="other">其他</button>
+                        <button onclick="switchTab('interest')"
+                            class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none active bg-white shadow text-blue-600"
+                            data-target="interest">兴趣班组</button>
+                        <button onclick="switchTab('prof')"
+                            class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
+                            data-target="prof">专业课程</button>
+                        <button onclick="switchTab('activity')"
+                            class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
+                            data-target="activity">活动</button>
+                        <button onclick="switchTab('other')"
+                            class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
+                            data-target="other">其他</button>
                     </div>
                 </div>
 
                 <div class="min-h-[400px]">
-                    <% function renderCards(list) { 
-                        if (list.length === 0) { %>
-                            <div class="col-span-4 text-center py-20 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                                <i class="fas fa-folder-open text-4xl mb-3 block"></i>暂无相关课程
-                            </div>
-                        <% } else { 
-                            list.forEach(item => { 
-                                const colorKey = centerColors[item.center] || 'gray';
-                                const labelBg = `bg-${colorKey}-600`;
-                                const borderClass = `border-${colorKey}-600`;
-                                const status = getCourseStatus(item.startTime, item.endTime);
+                    <% function renderCards(list) { if (list.length===0) { %>
+                        <div
+                            class="col-span-4 text-center py-20 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                            <i class="fas fa-folder-open text-4xl mb-3 block"></i>暂无相关课程
+                        </div>
+                        <% } else { list.forEach(item=> {
+                            const colorKey = centerColors[item.center] || 'gray';
+                            const labelBg = `bg-${colorKey}-600`;
+                            const borderClass = `border-${colorKey}-600`;
+                            const status = getCourseStatus(item.startTime, item.endTime);
                             %>
-                                <div class="group relative bg-white border-2 <%= borderClass %> rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-                                    
-                                    <!-- 【书签】右上角中心标签 (悬挂效果) -->
-                                    <div class="absolute top-0 right-4 <%= labelBg %> text-white w-7 pt-2 pb-3 rounded-b-md z-20 shadow-md flex justify-center opacity-90 group-hover:opacity-100 transition">
-                                        <span class="text-[10px] font-bold vertical-text leading-none tracking-widest"><%= item.center %></span>
+                            <div
+                                class="group relative bg-white border-2 <%= borderClass %> rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+
+                                <!-- 【书签】右上角中心标签 (悬挂效果) -->
+                                <div
+                                    class="absolute top-0 right-4 <%= labelBg %> text-white w-7 pt-2 pb-3 rounded-b-md z-20 shadow-md flex justify-center opacity-90 group-hover:opacity-100 transition">
+                                    <span class="text-[10px] font-bold vertical-text leading-none tracking-widest">
+                                        <%= item.center %>
+                                    </span>
+                                </div>
+
+                                <!-- 海报区域 -->
+                                <div class="w-full bg-gray-50 relative overflow-hidden">
+                                    <img src="<%= item.image %>" loading="lazy" alt="<%= item.title %>"
+                                        class="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105">
+                                    <!-- 全卡片点击链接 -->
+                                    <a href="/course/<%= item._id %>" class="absolute inset-0 z-10"
+                                        aria-label="查看详情"></a>
+                                </div>
+
+                                <div class="p-4 text-center flex flex-col flex-grow relative z-20 pointer-events-none">
+                                    <!-- 标题区域 (pointer-events-auto 让链接可点) -->
+                                    <div class="mb-2 pointer-events-auto">
+                                        <h3
+                                            class="text-md font-bold text-gray-900 inline align-middle leading-snug hover:text-blue-600 transition">
+                                            <a href="/course/<%= item._id %>">
+                                                <%= item.title %>
+                                            </a>
+                                        </h3>
+
+                                        <!-- 【状态标签】紧跟标题右侧 -->
+                                        <% if(status==='waiting' ) { %>
+                                            <span
+                                                class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-[10px] font-bold rounded whitespace-nowrap">等待中</span>
+                                            <% } else if (status==='running' ) { %>
+                                                <span
+                                                    class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-green-100 text-green-800 border border-green-200 text-[10px] font-bold rounded whitespace-nowrap animate-pulse">进行中</span>
+                                                <% } else { %>
+                                                    <span
+                                                        class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-gray-100 text-gray-500 border border-gray-200 text-[10px] font-bold rounded whitespace-nowrap">已结束</span>
+                                                    <% } %>
                                     </div>
 
-                                    <!-- 海报区域 -->
-                                    <div class="w-full bg-gray-50 relative overflow-hidden">
-                                        <img src="<%= item.image %>" loading="lazy" alt="<%= item.title %>" class="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105">
-                                        <!-- 全卡片点击链接 -->
-                                        <a href="/course/<%= item._id %>" class="absolute inset-0 z-10" aria-label="查看详情"></a>
-                                    </div>
-
-                                    <div class="p-4 text-center flex flex-col flex-grow relative z-20 pointer-events-none">
-                                        <!-- 标题区域 (pointer-events-auto 让链接可点) -->
-                                        <div class="mb-2 pointer-events-auto">
-                                            <h3 class="text-md font-bold text-gray-900 inline align-middle leading-snug hover:text-blue-600 transition">
-                                                <a href="/course/<%= item._id %>"><%= item.title %></a>
-                                            </h3>
-                                            
-                                            <!-- 【状态标签】紧跟标题右侧 -->
-                                            <% if(status === 'waiting') { %>
-                                                <span class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-[10px] font-bold rounded whitespace-nowrap">等待中</span>
-                                            <% } else if (status === 'running') { %>
-                                                <span class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-green-100 text-green-800 border border-green-200 text-[10px] font-bold rounded whitespace-nowrap animate-pulse">进行中</span>
-                                            <% } else { %>
-                                                <span class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-gray-100 text-gray-500 border border-gray-200 text-[10px] font-bold rounded whitespace-nowrap">已结束</span>
-                                            <% } %>
-                                        </div>
-
-                                        <div class="mt-auto pt-2 border-t border-gray-50">
-                                            <p class="text-lg font-bold text-red-600">HK$<%= item.price %></p>
-                                        </div>
+                                    <div class="mt-auto pt-2 border-t border-gray-50">
+                                        <p class="text-lg font-bold text-red-600">HK$<%= item.price %>
+                                        </p>
                                     </div>
                                 </div>
-                            <% }); 
-                        } 
-                    } %>
+                            </div>
+                            <% }); } } %>
 
-                    <!-- 移除 HTML 中的 'grid' 类，由 CSS .tab-content.active 控制 -->
-                    <div id="tab-interest" class="tab-content active grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
-                        <% renderCards(groupInterest) %>
-                    </div>
-                    <div id="tab-prof" class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
-                        <% renderCards(groupProf) %>
-                    </div>
-                    <div id="tab-activity" class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
-                        <% renderCards(groupActivity) %>
-                    </div>
-                    <div id="tab-other" class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
-                        <% renderCards(groupOther) %>
-                    </div>
+                                <!-- 移除 HTML 中的 'grid' 类，由 CSS .tab-content.active 控制 -->
+                                <div id="tab-interest"
+                                    class="tab-content active grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                    <% renderCards(groupInterest) %>
+                                </div>
+                                <div id="tab-prof"
+                                    class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                    <% renderCards(groupProf) %>
+                                </div>
+                                <div id="tab-activity"
+                                    class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                    <% renderCards(groupActivity) %>
+                                </div>
+                                <div id="tab-other"
+                                    class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                    <% renderCards(groupOther) %>
+                                </div>
                 </div>
             </div>
 
@@ -259,7 +314,8 @@
 
     <footer class="bg-white border-t border-gray-200 mt-auto">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-            <p class="text-center text-base text-gray-400">&copy; <%= __('footer_rights') %></p>
+            <p class="text-center text-base text-gray-400">&copy; <%= __('footer_rights') %>
+            </p>
         </div>
     </footer>
 
@@ -268,7 +324,7 @@
         const leftBtn = document.getElementById('scroll-left');
         const rightBtn = document.getElementById('scroll-right');
 
-        if(leftBtn && carousel) {
+        if (leftBtn && carousel) {
             leftBtn.addEventListener('click', () => { carousel.scrollBy({ left: -350, behavior: 'smooth' }); });
             rightBtn.addEventListener('click', () => { carousel.scrollBy({ left: 350, behavior: 'smooth' }); });
         }
@@ -276,7 +332,7 @@
         function switchTab(targetName) {
             // 更新按钮状态
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                if(btn.dataset.target === targetName) {
+                if (btn.dataset.target === targetName) {
                     btn.classList.add('bg-white', 'shadow', 'text-blue-600');
                     btn.classList.remove('text-gray-600', 'hover:text-gray-900');
                 } else {
@@ -299,7 +355,7 @@
             setTimeout(() => {
                 // 隐藏所有
                 allTabs.forEach(tab => tab.classList.remove('active'));
-                
+
                 // 显示目标并 Fade In
                 if (targetTab) {
                     targetTab.classList.add('active');
@@ -312,44 +368,68 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // 搜索框逻辑
             const searchInput = document.getElementById('search-input');
             const resultsContainer = document.getElementById('search-results');
             let debounceTimer;
 
-            if(searchInput) {
+            if (searchInput) {
+                // 1. 监听输入事件 (带防抖)
                 searchInput.addEventListener('input', (e) => {
                     const query = e.target.value.trim();
+
+                    // 清除上一次的定时器
                     clearTimeout(debounceTimer);
+
+                    // 如果输入为空，隐藏结果框
                     if (query.length === 0) {
                         resultsContainer.classList.add('hidden');
+                        resultsContainer.innerHTML = '';
                         return;
                     }
+
+                    // 延迟 300ms 后执行搜索，防止请求过于频繁
                     debounceTimer = setTimeout(async () => {
                         try {
                             const res = await fetch(`/api/course/search?q=${encodeURIComponent(query)}`);
                             const json = await res.json();
+
                             if (json.status === '0000' && json.data.length > 0) {
+                                // 生成结果列表 HTML
                                 const html = json.data.map(course => `
                                 <a href="/course/${course._id}" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-50 flex items-center transition">
                                     <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
-                                        <img src="${course.image}" class="h-full w-full object-cover">
+                                        <img src="${course.image}" alt="${course.title}" class="h-full w-full object-cover" onerror="this.src='/images/placeholder.png'">
                                     </div>
                                     <div class="ml-3">
                                         <div class="text-sm font-medium text-gray-900">${course.title}</div>
                                         <div class="text-xs text-red-500">HK$${course.price}</div>
                                     </div>
                                 </a>`).join('');
+
                                 resultsContainer.innerHTML = html;
                                 resultsContainer.classList.remove('hidden');
                             } else {
+                                // 无结果
                                 resultsContainer.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">未找到相关课程</div>';
                                 resultsContainer.classList.remove('hidden');
                             }
-                        } catch (err) {}
+                        } catch (err) {
+                            console.error('搜索出错:', err);
+                        }
                     }, 300);
                 });
-                
+
+                // 2. 聚焦时如果框内有字，重新显示结果
+                searchInput.addEventListener('focus', () => {
+                    if (searchInput.value.trim().length > 0 && resultsContainer.innerHTML !== '') {
+                        resultsContainer.classList.remove('hidden');
+                    }
+                });
+
+                // 3. 点击外部区域关闭下拉框
                 document.addEventListener('click', (e) => {
+                    // 如果点击的不是输入框，也不是结果框内部
                     if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
                         resultsContainer.classList.add('hidden');
                     }
@@ -358,4 +438,5 @@
         });
     </script>
 </body>
+
 </html>
