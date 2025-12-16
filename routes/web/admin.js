@@ -143,13 +143,13 @@ router.post("/course/add", checkLogin, upload.single("image"), processImage, asy
         description, image,
         group: group || "兴趣班组",
         center: center || "山景",
-        isRecommended: isRecommended === "on" // 复选框选中时值为 "on"
+        isRecommended: isRecommended === "on"
       });
 
       res.redirect("/wokevfuitlkuxrla/dashboard");
     } catch (err) {
       console.error("添加课程失败:", err);
-      res.render("error", { message: "添加失败", error: err });
+      res.render("shared/error", { message: "添加失败", error: err });
     }
   }
 );
@@ -172,7 +172,7 @@ router.get("/course/delete/:id", checkLogin, async (req, res) => {
     await CourseModel.deleteOne({ _id: id });
     res.redirect("/wokevfuitlkuxrla/dashboard");
   } catch (err) {
-    res.render("error", { message: "删除失败", error: err });
+    res.render("shared/error", { message: "删除失败", error: err });
   }
 });
 
@@ -213,7 +213,7 @@ router.get("/course/edit/:id", checkLogin, async (req, res) => {
 
     res.render("admin/edit", { course, categories, user: req.session.username });
   } catch (err) {
-    res.render("error", { message: "获取课程失败", error: err });
+    res.render("shared/error", { message: "获取课程失败", error: err });
   }
 });
 
@@ -242,7 +242,7 @@ router.post("/course/update", checkLogin, upload.single("image"), processImage, 
       res.redirect("/wokevfuitlkuxrla/dashboard");
     } catch (err) {
       console.error(err);
-      res.render("error", { message: "更新失败", error: err });
+      res.render("shared/error", { message: "更新失败", error: err });
     }
   }
 );

@@ -131,7 +131,7 @@
                     <div id="carousel-container"
                         class="flex overflow-x-auto gap-6 scrollbar-hide scroll-smooth pb-4 px-1 snap-x py-4">
                         <% if (hotCourses.length===0) { %>
-                            <div class="w-full text-center py-10 text-gray-400">暂无热门课程</div>
+                            <div class="w-full text-center py-10 text-gray-400"><%= __('暂无热门课程') %></div>
                             <% } else { %>
                                 <% hotCourses.forEach(course=> {
                                     const colorKey = centerColors[course.center] || 'gray';
@@ -170,13 +170,13 @@
                                                 </h3>
                                                 <% if(status==='waiting' ) { %>
                                                     <span
-                                                        class="inline-flex align-middle ml-2 px-2 py-0.5 bg-green-100 text-green-800 border border-green-200 text-xs font-bold rounded-md whitespace-nowrap animate-pulse">报名中</span>
+                                                        class="inline-flex align-middle ml-2 px-2 py-0.5 bg-green-100 text-green-800 border border-green-200 text-xs font-bold rounded-md whitespace-nowrap animate-pulse"><%= __('报名中') %></span>
                                                     <% } else if (status==='running' ) { %>
                                                         <span
-                                                            class="inline-flex align-middle ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-xs font-bold rounded-md whitespace-nowrap">进行中</span>
+                                                            class="inline-flex align-middle ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-xs font-bold rounded-md whitespace-nowrap"><%= __('进行中') %></span>
                                                         <% } else { %>
                                                             <span
-                                                                class="inline-flex align-middle ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 text-xs font-bold rounded-md whitespace-nowrap">已结束</span>
+                                                                class="inline-flex align-middle ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 text-xs font-bold rounded-md whitespace-nowrap"><%= __('已结束') %></span>
                                                             <% } %>
                                             </div>
 
@@ -186,7 +186,7 @@
                                                 </span>
                                                 <a href="/course/<%= course._id %>"
                                                     class="text-white bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded-full text-sm font-medium transition shadow-sm">
-                                                    查看详情
+                                                    <%= __('查看详情') %>
                                                 </a>
                                             </div>
                                         </div>
@@ -213,19 +213,19 @@
                     <div class="inline-flex bg-gray-200 rounded-full p-1 shadow-inner">
                         <button onclick="switchTab('interest')"
                             class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none active bg-white shadow text-blue-600"
-                            data-target="interest">兴趣班组</button>
+                            data-target="interest"><%= __('兴趣班组') %></button>
                         <button onclick="switchTab('prof')"
                             class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
-                            data-target="prof">专业课程</button>
+                            data-target="prof"><%= __('专业课程') %></button>
                         <button onclick="switchTab('activity')"
                             class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
-                            data-target="activity">活动</button>
+                            data-target="activity"><%= __('活动') %></button>
                         <button onclick="switchTab('erb')"
                             class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
-                            data-target="erb">ERB再培训</button>
+                            data-target="erb"><%= __('ERB再培训') %></button>
                         <button onclick="switchTab('other')"
                             class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
-                            data-target="other">其他</button>
+                            data-target="other"><%= __('其他') %></button>
                     </div>
                 </div>
 
@@ -233,7 +233,7 @@
                     <% function renderCards(list) { if (list.length===0) { %>
                         <div
                             class="col-span-4 text-center py-20 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                            <i class="fas fa-folder-open text-4xl mb-3 block"></i>暂无相关课程
+                            <i class="fas fa-folder-open text-4xl mb-3 block"></i><%= __('暂无相关课程') %>
                         </div>
                         <% } else { list.forEach(item=> {
                             const colorKey = centerColors[item.center] || 'gray';
@@ -274,13 +274,13 @@
                                         <!-- 【状态标签】紧跟标题右侧 -->
                                         <% if(status==='waiting' ) { %>
                                             <span
-                                                class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-green-100 text-green-800 border border-green-200 text-[10px] font-bold rounded whitespace-nowrap animate-pulse">报名中</span>
+                                                class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-green-100 text-green-800 border border-green-200 text-[10px] font-bold rounded whitespace-nowrap animate-pulse"><%= __('报名中') %></span>
                                             <% } else if (status==='running' ) { %>
                                                 <span
-                                                    class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-[10px] font-bold rounded whitespace-nowrap">进行中</span>
+                                                    class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-yellow-100 text-yellow-800 border border-yellow-200 text-[10px] font-bold rounded whitespace-nowrap"><%= __('进行中') %></span>
                                                 <% } else { %>
                                                     <span
-                                                        class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-gray-100 text-gray-500 border border-gray-200 text-[10px] font-bold rounded whitespace-nowrap">已结束</span>
+                                                        class="inline-flex align-middle ml-1.5 px-1.5 py-0.5 bg-gray-100 text-gray-500 border border-gray-200 text-[10px] font-bold rounded whitespace-nowrap"><%= __('已结束') %></span>
                                                     <% } %>
                                     </div>
 

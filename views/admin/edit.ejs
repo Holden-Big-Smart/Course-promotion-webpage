@@ -239,9 +239,9 @@
     </div>
 
     <script>
-        var serverCategories = <% - (typeof categories !== 'undefined' && categories) ? JSON.stringify(categories) : "[]" %>;
+        var serverCategories = <%- (typeof categories !== 'undefined' && categories) ? JSON.stringify(categories) : "[]" %>;
         // 预选中的分类
-        var preSelected = <% - JSON.stringify(course.category || []) %>;
+        var preSelected = <%- JSON.stringify(course.category || []) %>;
         var state = { 'category-select': { selected: preSelected, options: serverCategories } };
 
         document.addEventListener('DOMContentLoaded', function () {

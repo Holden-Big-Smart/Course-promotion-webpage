@@ -339,7 +339,7 @@
     </div>
 
     <script>
-        var serverCategories = <% - (typeof categories !== 'undefined' && categories) ? JSON.stringify(categories) : "[]" %>;
+        var serverCategories = <%- (typeof categories !== 'undefined' && categories) ? JSON.stringify(categories) : "[]" %>;
         var state = { 'category-select': { selected: [], options: serverCategories } };
 
         document.addEventListener('DOMContentLoaded', function () {
