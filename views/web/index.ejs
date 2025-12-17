@@ -37,9 +37,55 @@
         }
 
         .tab-content.active {
-            display: grid !important;
-            /* 激活时强制显示为 grid */
+            display: flex !important;
+            flex-direction: column;
             opacity: 1;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+            gap: 1.5rem;
+            /* 间距 */
+            font-weight: bold;
+            color: #4b5563;
+            user-select: none;
+        }
+
+        .page-btn {
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-btn:hover:not(.disabled) {
+            background-color: #eff6ff;
+            color: #2563eb;
+            border-color: #bfdbfe;
+            transform: scale(1.05);
+        }
+
+        .page-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background-color: #f9fafb;
+        }
+
+        .page-info {
+            min-width: 80px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -268,29 +314,44 @@
                                 </div>
                                 <% }); } } %>
 
-                                    <div id="tab-interest"
-                                        class="tab-content active grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
-                                        <% renderCards(groupInterest) %>
+                                    <div id="tab-interest" class="tab-content active">
+                                        <div
+                                            class="course-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
+                                            <% renderCards(groupInterest) %>
+                                        </div>
+                                        <div class="pagination-container" data-id="tab-interest"></div>
                                     </div>
 
-                                    <div id="tab-prof"
-                                        class="tab-content grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
-                                        <% renderCards(groupProf) %>
+                                    <div id="tab-prof" class="tab-content">
+                                        <div
+                                            class="course-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
+                                            <% renderCards(groupProf) %>
+                                        </div>
+                                        <div class="pagination-container" data-id="tab-prof"></div>
                                     </div>
 
-                                    <div id="tab-activity"
-                                        class="tab-content grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
-                                        <% renderCards(groupActivity) %>
+                                    <div id="tab-activity" class="tab-content">
+                                        <div
+                                            class="course-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
+                                            <% renderCards(groupActivity) %>
+                                        </div>
+                                        <div class="pagination-container" data-id="tab-activity"></div>
                                     </div>
 
-                                    <div id="tab-erb"
-                                        class="tab-content grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
-                                        <% renderCards(groupERB) %>
+                                    <div id="tab-erb" class="tab-content">
+                                        <div
+                                            class="course-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
+                                            <% renderCards(groupERB) %>
+                                        </div>
+                                        <div class="pagination-container" data-id="tab-erb"></div>
                                     </div>
 
-                                    <div id="tab-other"
-                                        class="tab-content grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
-                                        <% renderCards(groupOther) %>
+                                    <div id="tab-other" class="tab-content">
+                                        <div
+                                            class="course-grid grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
+                                            <% renderCards(groupOther) %>
+                                        </div>
+                                        <div class="pagination-container" data-id="tab-other"></div>
                                     </div>
                     </div>
                 </div>
@@ -352,6 +413,93 @@
                     }
                 }, 300);
             }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const ITEMS_PER_PAGE = 8; // 每页显示数量
+
+                // 初始化所有 Tab
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    initPagination(tab);
+                });
+
+                function initPagination(tabElement) {
+                    const grid = tabElement.querySelector('.course-grid');
+                    const paginationContainer = tabElement.querySelector('.pagination-container');
+
+                    if (!grid || !paginationContainer) return;
+
+                    // 获取该 Tab 下所有课程卡片
+                    // 注意：renderCards 生成的可能是直接的 div 元素
+                    const cards = Array.from(grid.children);
+                    const totalItems = cards.length;
+
+                    // 如果课程数量 <= 每页限制，不显示分页，但要确保显示所有卡片
+                    if (totalItems <= ITEMS_PER_PAGE) return;
+
+                    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+                    let currentPage = 1;
+
+                    // 渲染分页 HTML (← 1 / 3 →)
+                    paginationContainer.innerHTML = `
+                <div class="pagination-wrapper">
+                    <div class="page-btn prev-btn"><i class="fas fa-arrow-left"></i></div>
+                    <span class="page-info">1 / ${totalPages}</span>
+                    <div class="page-btn next-btn"><i class="fas fa-arrow-right"></i></div>
+                </div>
+            `;
+
+                    const prevBtn = paginationContainer.querySelector('.prev-btn');
+                    const nextBtn = paginationContainer.querySelector('.next-btn');
+                    const pageInfo = paginationContainer.querySelector('.page-info');
+
+                    // 更新显示状态的核心函数
+                    function updateDisplay() {
+                        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+                        const end = start + ITEMS_PER_PAGE;
+
+                        // 遍历卡片，控制显隐
+                        cards.forEach((card, index) => {
+                            if (index >= start && index < end) {
+                                card.classList.remove('hidden'); // 显示
+                                card.style.display = ''; // 清除可能的内联样式
+                            } else {
+                                card.classList.add('hidden'); // 隐藏
+                            }
+                        });
+
+                        // 更新页码文字
+                        pageInfo.textContent = `${currentPage} / ${totalPages}`;
+
+                        // 更新按钮状态
+                        if (currentPage === 1) prevBtn.classList.add('disabled');
+                        else prevBtn.classList.remove('disabled');
+
+                        if (currentPage === totalPages) nextBtn.classList.add('disabled');
+                        else nextBtn.classList.remove('disabled');
+                    }
+
+                    // 绑定点击事件
+                    prevBtn.addEventListener('click', () => {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            updateDisplay();
+                            // 可选：翻页后平滑滚动到列表顶部
+                            // tabElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    });
+
+                    nextBtn.addEventListener('click', () => {
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            updateDisplay();
+                            // tabElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    });
+
+                    // 初始化第一次显示
+                    updateDisplay();
+                }
+            });
         </script>
 </body>
 

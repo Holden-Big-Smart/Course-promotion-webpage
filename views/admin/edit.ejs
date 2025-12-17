@@ -128,18 +128,7 @@
                     <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
                         <label class="block text-sm font-bold text-gray-700 mb-2">所屬分組</label>
                         <div class="flex flex-wrap gap-4">
-                            I notice that the HTML code content provided is empty (just an empty code block). Without any actual HTML elements or structure to analyze, I cannot generate meaningful documentation comments.
-
-For HTML documentation, we typically document:
-- The purpose of the HTML document or section
-- Key components and their relationships
-- Any important accessibility considerations
-- Semantic meaning of structural elements
-
-However, since there's no actual HTML content to document, I cannot proceed with generating documentation comments. 
-
-Would you please provide the actual HTML content you'd like documented? Once you share the HTML code, I can generate appropriate documentation comments following HTML documentation conventions.
-<% ["興趣班組", "專業課程" , "活動" , "其他" , "ERB再培訓" ].forEach((item)=> { %>
+                            <% ["興趣班組", "專業課程" , "活動" , "其他" , "ERB再培訓" ].forEach((item)=> { %>
                                 <label class="inline-flex items-center cursor-pointer">
                                     <input type="radio" name="group" value="<%= item %>"
                                         class="form-radio text-blue-600 h-4 w-4" <%=course.group===item ? 'checked' : ''
