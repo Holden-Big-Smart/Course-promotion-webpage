@@ -13,11 +13,16 @@ router.get("/", async (req, res) => {
 
     // 2. 获取各个分组的最新课程
     const [groupInterest, groupProf, groupActivity, groupOther, groupERB] = await Promise.all([
-        CourseModel.find({ group: "兴趣班组" }).sort({ startTime: -1 }).limit(8),
-        CourseModel.find({ group: "专业课程" }).sort({ startTime: -1 }).limit(8),
-        CourseModel.find({ group: "活动" }).sort({ startTime: -1 }).limit(8),
+        // 修改为：興趣班組
+        CourseModel.find({ group: "興趣班組" }).sort({ startTime: -1 }).limit(8),
+        // 修改为：專業課程
+        CourseModel.find({ group: "專業課程" }).sort({ startTime: -1 }).limit(8),
+        // 修改为：活動
+        CourseModel.find({ group: "活動" }).sort({ startTime: -1 }).limit(8),
+        // 其他 (繁简写法一样，不用动)
         CourseModel.find({ group: "其他" }).sort({ startTime: -1 }).limit(8),
-        CourseModel.find({ group: "ERB再培训" }).sort({ startTime: -1 }).limit(8)
+        // 修改为：ERB再培訓 (注意统一用词)
+        CourseModel.find({ group: "ERB再培訓" }).sort({ startTime: -1 }).limit(8)
     ]);
 
     // 3. 渲染页面

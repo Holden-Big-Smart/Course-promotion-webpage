@@ -8,8 +8,8 @@ const CourseSchema = new Schema({
   
   group: { 
     type: String, 
-    default: "兴趣班组", 
-    enum: ["興趣班組", "專業課程" , "活動" , "其他" , "ERB再訓練"]
+    default: "興趣班組", 
+    enum: ["興趣班組", "專業課程" , "活動" , "其他" , "ERB再培訓"]
   },
   
   center: { 
