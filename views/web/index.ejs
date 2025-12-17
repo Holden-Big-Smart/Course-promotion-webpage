@@ -78,7 +78,7 @@
                     <div class="relative">
                         <!-- 轮播容器 -->
                         <div id="carousel-container"
-                            class="flex overflow-x-auto gap-6 scrollbar-hide scroll-smooth pb-4 px-1 snap-x py-4">
+                            class="flex overflow-x-auto gap-3 md:gap-6 scrollbar-hide scroll-smooth pb-4 px-1 snap-x py-4">
                             <% if (hotCourses.length===0) { %>
                                 <div class="w-full text-center py-10 text-gray-400">
                                     <%= __('暂无热门课程') %>
@@ -91,7 +91,7 @@
                                         const status = getCourseStatus(course.startTime, course.endTime);
                                         %>
                                         <div
-                                            class="flex-shrink-0 w-80 md:w-64 snap-start bg-white rounded-xl shadow-lg border-2 <%= borderClass %> overflow-hidden hover:shadow-2xl transition-all duration-300 relative flex flex-col">
+                                            class="flex-shrink-0 w-44 md:w-64 snap-start bg-white rounded-xl shadow-lg border-2 <%= borderClass %> overflow-hidden hover:shadow-2xl transition-all duration-300 relative flex flex-col">
 
                                             <!-- 【书签】右上角中心标签 -->
                                             <div
@@ -114,7 +114,7 @@
                                                 <!-- 标题 + 状态 -->
                                                 <div class="mb-3">
                                                     <h3
-                                                        class="text-lg font-bold text-gray-900 inline align-middle leading-snug hover:text-red-600 transition">
+                                                        class="text-sm md:text-lg font-bold text-gray-900 inline align-middle leading-snug hover:text-red-600 transition">
                                                         <a href="/course/<%= course._id %>">
                                                             <%= course.title %>
                                                         </a>
@@ -139,7 +139,8 @@
 
                                                 <!-- 底部价格与按钮 -->
                                                 <div class="flex justify-between items-center mt-auto">
-                                                    <span class="text-red-600 font-bold text-xl">HK$ <%= course.price %>
+                                                    <span class="text-red-600 font-bold text-base md:text-xl">HK$ <%=
+                                                            course.price %>
                                                     </span>
                                                     <a href="/course/<%= course._id %>"
                                                         class="text-white bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded-full text-sm font-medium transition shadow-sm">
@@ -169,27 +170,27 @@
                     <div class="flex justify-center mb-10">
                         <div class="inline-flex bg-gray-200 rounded-full p-1 shadow-inner">
                             <button onclick="switchTab('interest')"
-                                class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none active bg-white shadow text-blue-600"
+                                class="tab-btn px-2 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none active bg-white shadow text-blue-600"
                                 data-target="interest">
                                 <%= __('兴趣班组') %>
                             </button>
                             <button onclick="switchTab('prof')"
-                                class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
+                                class="tab-btn px-2 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
                                 data-target="prof">
                                 <%= __('专业课程') %>
                             </button>
                             <button onclick="switchTab('activity')"
-                                class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
+                                class="tab-btn px-2 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
                                 data-target="activity">
                                 <%= __('活动') %>
                             </button>
                             <button onclick="switchTab('erb')"
-                                class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
+                                class="tab-btn px-2 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
                                 data-target="erb">
                                 <%= __('ERB再培训') %>
                             </button>
                             <button onclick="switchTab('other')"
-                                class="tab-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
+                                class="tab-btn px-2 py-2 rounded-full text-sm font-bold transition-all duration-300 text-gray-600 hover:text-gray-900 focus:outline-none"
                                 data-target="other">
                                 <%= __('其他') %>
                             </button>
@@ -234,7 +235,7 @@
                                         <!-- 标题区域 (pointer-events-auto 让链接可点) -->
                                         <div class="mb-2 pointer-events-auto">
                                             <h3
-                                                class="text-md font-bold text-gray-900 inline align-middle leading-snug hover:text-blue-600 transition">
+                                                class="text-sm font-bold text-gray-900 inline align-middle leading-snug hover:text-blue-600 transition">
                                                 <a href="/course/<%= item._id %>">
                                                     <%= item.title %>
                                                 </a>
@@ -260,32 +261,35 @@
                                         </div>
 
                                         <div class="mt-auto pt-2 border-t border-gray-50">
-                                            <p class="text-lg font-bold text-red-600">HK$<%= item.price %>
+                                            <p class="text-base font-bold text-red-600">HK$<%= item.price %>
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                                 <% }); } } %>
 
-                                    <!-- 移除 HTML 中的 'grid' 类，由 CSS .tab-content.active 控制 -->
                                     <div id="tab-interest"
-                                        class="tab-content active grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                        class="tab-content active grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
                                         <% renderCards(groupInterest) %>
                                     </div>
+
                                     <div id="tab-prof"
-                                        class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                        class="tab-content grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
                                         <% renderCards(groupProf) %>
                                     </div>
+
                                     <div id="tab-activity"
-                                        class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                        class="tab-content grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
                                         <% renderCards(groupActivity) %>
                                     </div>
+
                                     <div id="tab-erb"
-                                        class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                        class="tab-content grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
                                         <% renderCards(groupERB) %>
                                     </div>
+
                                     <div id="tab-other"
-                                        class="tab-content grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 xl:gap-x-8 items-start">
+                                        class="tab-content grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3 items-start">
                                         <% renderCards(groupOther) %>
                                     </div>
                     </div>
