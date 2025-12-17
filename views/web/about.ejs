@@ -11,53 +11,7 @@
 
 <body class="bg-gray-50 min-h-screen flex flex-col font-sans">
 
-    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-
-                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='/'">
-                    <img class="h-10 w-auto"
-                        src="https://xmauez-hk.myshopify.com/cdn/shop/files/logo.png?height=36&v=1764654657"
-                        alt="Logo" />
-                </div>
-
-                <div id="react_search_root" class="flex-1 max-w-lg mx-4 md:mx-8"></div>
-
-                <div class="hidden md:flex items-center gap-6">
-
-                    <div class="flex space-x-6 text-sm font-medium">
-                        <a href="/" class="text-gray-700 hover:text-blue-600 transition">
-                            <%= __('nav_home') %>
-                        </a>
-                        <a href="/about" class="text-gray-700 hover:text-blue-600 transition">
-                            <%= __('nav_about') %>
-                        </a>
-                        <a href="/contact" class="text-gray-700 hover:text-blue-600 transition">
-                            <%= __('nav_contact') %>
-                        </a>
-                    </div>
-
-                    <div class="h-4 w-px bg-gray-300"></div>
-
-                    <div class="flex items-center gap-2 text-xs font-bold text-gray-600">
-                        <a href="/lang/zh-CN"
-                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-CN' ? 'bg-gray-100 text-black' : '' %>">
-                            简
-                        </a>
-                        <a href="/lang/zh-TW"
-                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'zh-TW' ? 'bg-gray-100 text-black' : '' %>">
-                            繁
-                        </a>
-                        <a href="/lang/en"
-                            class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-400 transition <%= getLocale() === 'en' ? 'bg-gray-100 text-black' : '' %>">
-                            En
-                        </a>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </nav>
+    <%- include('../shared/header') %>
 
     <div class="relative bg-gray-900 h-64">
         <div class="absolute inset-0">

@@ -1,0 +1,169 @@
+<nav class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm font-sans">
+    
+    <div class="md:hidden flex flex-col w-full">
+        
+        <div class="flex justify-center items-center py-3 border-b border-gray-50 bg-white">
+            <img class="h-10 w-auto object-contain" src="/images/site_logo.webp" alt="Logo" onclick="window.location.href='/'" />
+        </div>
+
+        <div class="flex items-center px-4 py-2 gap-3 bg-gray-50/50">
+            <div class="flex-1 relative group">
+                <input type="text" id="mobile-search-input"
+                    class="w-full bg-white border border-gray-200 focus:border-blue-500 rounded-full py-2 px-4 pl-9 text-sm focus:outline-none transition-shadow shadow-sm"
+                    placeholder="<%= __('search_placeholder') %>" autocomplete="off" />
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <div id="mobile-search-results" class="hidden absolute top-full left-0 w-full bg-white shadow-xl rounded-b-md mt-1 z-50 border border-gray-100 max-h-60 overflow-y-auto"></div>
+            </div>
+
+            <button id="mobile-menu-btn" class="flex-shrink-0 p-2 text-gray-600 hover:text-blue-600 focus:outline-none bg-white border border-gray-200 rounded-md shadow-sm">
+                <i class="fas fa-bars text-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-20 items-center">
+            <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='/'">
+                <img class="h-10 w-auto" src="/images/site_logo.webp" alt="Logo" />
+            </div>
+
+            <div class="flex-1 max-w-lg mx-4 md:mx-8 relative group">
+                <div class="relative">
+                    <input type="text" id="desktop-search-input"
+                        class="w-full bg-gray-100 border-transparent focus:bg-white border focus:border-blue-500 rounded-md py-2 px-4 pl-10 focus:outline-none transition-colors"
+                        placeholder="<%= __('search_placeholder') %>" autocomplete="off" />
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+                <div id="desktop-search-results" class="hidden absolute top-full left-0 w-full bg-white shadow-xl rounded-b-md mt-1 z-50 border border-gray-100 max-h-80 overflow-y-auto"></div>
+            </div>
+
+            <div class="flex space-x-6 text-sm font-medium">
+                <a href="/" class="text-gray-700 hover:text-blue-600 transition"><%= __('nav_home') %></a>
+                <a href="/about" class="text-gray-700 hover:text-blue-600 transition"><%= __('nav_about') %></a>
+                <a href="/contact" class="text-gray-700 hover:text-blue-600 transition"><%= __('nav_contact') %></a>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs font-bold text-gray-600 ml-6">
+                <a href="/lang/zh-CN" class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 transition <%= getLocale() === 'zh-CN' ? 'bg-gray-100 text-black' : '' %>">简</a>
+                <a href="/lang/zh-TW" class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 transition <%= getLocale() === 'zh-TW' ? 'bg-gray-100 text-black' : '' %>">繁</a>
+                <a href="/lang/en" class="border border-gray-300 px-2 py-1 hover:bg-blue-50 hover:text-blue-600 transition <%= getLocale() === 'en' ? 'bg-gray-100 text-black' : '' %>">En</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0 shadow-lg z-40">
+        <div class="px-4 py-4 space-y-2">
+            <a href="/" class="flex items-center px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg">
+                <i class="fas fa-home w-8 text-center text-blue-500"></i> <%= __('nav_home') %>
+            </a>
+            <a href="/about" class="flex items-center px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg">
+                <i class="fas fa-info-circle w-8 text-center text-blue-500"></i> <%= __('nav_about') %>
+            </a>
+            <a href="/contact" class="flex items-center px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-lg">
+                <i class="fas fa-phone w-8 text-center text-blue-500"></i> <%= __('nav_contact') %>
+            </a>
+            
+            <div class="border-t border-gray-100 my-2 pt-2">
+                <p class="text-xs text-gray-400 mb-3 px-3 uppercase font-bold tracking-wider">Language</p>
+                <div class="flex gap-2 px-3">
+                    <a href="/lang/zh-CN" class="flex-1 text-center py-2 border rounded-md text-sm <%= getLocale() === 'zh-CN' ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'border-gray-200 text-gray-600 bg-white' %>">简体</a>
+                    <a href="/lang/zh-TW" class="flex-1 text-center py-2 border rounded-md text-sm <%= getLocale() === 'zh-TW' ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'border-gray-200 text-gray-600 bg-white' %>">繁體</a>
+                    <a href="/lang/en" class="flex-1 text-center py-2 border rounded-md text-sm <%= getLocale() === 'en' ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'border-gray-200 text-gray-600 bg-white' %>">EN</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 汉堡菜单逻辑 ---
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = menuBtn ? menuBtn.querySelector('i') : null;
+
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+                // 切换图标
+                if (menuIcon) {
+                    menuIcon.classList.toggle('fa-bars');
+                    menuIcon.classList.toggle('fa-times');
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                    mobileMenu.classList.add('hidden');
+                    if(menuIcon) {
+                        menuIcon.classList.add('fa-bars');
+                        menuIcon.classList.remove('fa-times');
+                    }
+                }
+            });
+        }
+
+        // --- 搜索框通用逻辑 (封装成函数以支持移动和PC两套ID) ---
+        function initSearch(inputId, resultsId) {
+            const input = document.getElementById(inputId);
+            const results = document.getElementById(resultsId);
+            let debounceTimer;
+
+            if (!input || !results) return;
+
+            input.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                clearTimeout(debounceTimer);
+
+                if (query.length === 0) {
+                    results.classList.add('hidden');
+                    results.innerHTML = '';
+                    return;
+                }
+
+                debounceTimer = setTimeout(async () => {
+                    try {
+                        const res = await fetch(`/api/course/search?q=${encodeURIComponent(query)}`);
+                        const json = await res.json();
+
+                        if (json.status === '0000' && json.data.length > 0) {
+                            const html = json.data.map(course => `
+                                <a href="/course/${course._id}" class="block px-4 py-3 hover:bg-gray-50 border-b border-gray-50 flex items-center transition">
+                                    <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded overflow-hidden">
+                                        <img src="${course.image}" class="h-full w-full object-cover" onerror="this.src='/images/placeholder.png'">
+                                    </div>
+                                    <div class="ml-3 text-left">
+                                        <div class="text-sm font-medium text-gray-900 line-clamp-1">${course.title}</div>
+                                        <div class="text-xs text-red-500">HK$${course.price}</div>
+                                    </div>
+                                </a>`).join('');
+                            results.innerHTML = html;
+                            results.classList.remove('hidden');
+                        } else {
+                            results.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">未找到相关课程</div>';
+                            results.classList.remove('hidden');
+                        }
+                    } catch (err) {
+                        console.error('搜索出错:', err);
+                    }
+                }, 300);
+            });
+
+            // 点击外部关闭
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !results.contains(e.target)) {
+                    results.classList.add('hidden');
+                }
+            });
+        }
+
+        // 分别初始化移动端和桌面端搜索
+        initSearch('mobile-search-input', 'mobile-search-results');
+        initSearch('desktop-search-input', 'desktop-search-results');
+    });
+</script>
