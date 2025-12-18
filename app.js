@@ -33,7 +33,7 @@ i18n.configure({
 });
 app.use(i18n.init);
 
-const allowList = ["localhost", "127.0.0.1", "dacsmy.space"];
+const allowList = ["localhost", "127.0.0.1", "dacsmy.space","43.103.28.93"];
 
 const antiHotlink = (req, res, next) => {
   const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(req.path);
