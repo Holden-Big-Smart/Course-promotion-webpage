@@ -50,7 +50,6 @@
 	"课程周期": "Duration",
 	"至": "to",
 	"WhatsApp 查询报名": "WhatsApp Registration/Inquiry",
-	"致电中心: 2467 3867": "Call Center: 2467 3867",
 	"课程简介": "Course Introduction",
 	"暂无详细介绍": "No detailed description available.",
 	"暂无热门课程": "No popular courses available.",
@@ -64,5 +63,5 @@
 	"报名中": "OPEN",
 	"进行中": "Active",
 	"已结束": "Ended",
-	"致电中心": " 2467 3867"
+	"致电中心": "Call Center"
 }

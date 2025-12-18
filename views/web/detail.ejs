@@ -127,19 +127,31 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col gap-3">
-                        <a href="https://wa.me/85224673867?text=你好，我想查询课程：<%= course.title %>" target="_blank"
-                            class="w-full flex items-center justify-center bg-green-600 border border-transparent rounded-md py-4 px-8 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-sm transition">
-                            <i class="fab fa-whatsapp mr-2 text-xl"></i>
-                            <%= __('WhatsApp 查询报名') %>
-                        </a>
+                    <% 
+                    const centerContacts = {
+                        "山景": "2467 3867",
+                        "湖碧": "2466 5899",
+                        "湖翠": "2457 3781",
+                        "田景": "2454 9297",
+                        "蝴蝶": "2463 8343",
+                        "柏麗": "2457 7210"
+                    };
+                    const currentPhone = centerContacts[course.center] || "2467 3867";
+                    const cleanPhone = currentPhone.replace(/ /g, "");
+                    const whatsappNum = "852" + cleanPhone;
+                %>
 
-                        <a href="tel:24673867"
-                            class="w-full flex items-center justify-center bg-white border border-gray-300 rounded-md py-4 px-8 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
-                            <i class="fas fa-phone-alt mr-2 text-gray-400"></i>
-                            <%= __('致电中心: 2467 3867') %>
-                        </a>
-                    </div>
+                <div class="flex flex-col gap-3">
+                    <a href="https://wa.me/<%= whatsappNum %>?text=你好，我想查询课程：<%= course.title %>" target="_blank"
+                        class="w-full flex items-center justify-center bg-green-600 border border-transparent rounded-md py-4 px-8 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-sm transition">
+                        <i class="fab fa-whatsapp mr-2 text-xl"></i> <%= __('WhatsApp 查询报名') %>
+                    </a>
+
+                    <a href="tel:<%= cleanPhone %>"
+                        class="w-full flex items-center justify-center bg-white border border-gray-300 rounded-md py-4 px-8 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                        <i class="fas fa-phone-alt mr-2 text-gray-400"></i> <%= __('致电中心') %>: <%= currentPhone %>
+                    </a>
+                </div>
 
                     <div class="mt-8">
                         <h3 class="text-sm font-medium text-gray-900">
