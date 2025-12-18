@@ -33,6 +33,17 @@ i18n.configure({
 });
 app.use(i18n.init);
 
+// 强制默认语言中间件：如果用户没有设置 cookie，忽略浏览器语言，强制设为繁体
+app.use((req, res, next) => {
+    // 检查是否有 'lang' cookie
+    if (!req.cookies.lang) {
+        // 如果没有 cookie，强制将当前请求的语言设置为繁体中文
+        // 这会覆盖 i18n 根据浏览器 Header 自动检测出的 'en'
+        req.setLocale("zh-TW");
+    }
+    next();
+});
+
 const allowList = ["localhost", "127.0.0.1", "dacsmy.space","43.103.28.93"];
 
 const antiHotlink = (req, res, next) => {
