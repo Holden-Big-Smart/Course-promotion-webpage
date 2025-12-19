@@ -1,4 +1,148 @@
-更新日志
+Course Promotion Webpage 🎓
+
+A full-stack course management and showcase platform designed to streamline information distribution.
+
+📖 Introduction
+
+Course Promotion Webpage is a dynamic web application built to facilitate the digital management of educational courses.
+
+Originally developed to address the administrative challenges at Tuen Mun District Women's Association, this system replaces manual, paper-based workflows with a centralized digital solution. It enables administrative staff—regardless of their technical background—to easily update, add, or remove course listings through a secure backend, while providing the public with a responsive interface to browse available programs.
+
+✨ Key Features
+
+🖥️ Public User Interface
+
+Dynamic Course Showcase: Displays up-to-date course information fetched directly from the database.
+
+Responsive Design: Built with Bootstrap to ensure seamless browsing on mobile, tablet, and desktop devices.
+
+Categorized Views: Allows users to filter courses by category (e.g., Arts, Tech, Health).
+
+🛠️ Admin Dashboard (CMS)
+
+Secure Authentication: Protected login area for authorized staff members.
+
+CRUD Operations: Complete management capabilities:
+
+Create: Add new courses with images, descriptions, dates, and fees.
+
+Read: View full details of existing records.
+
+Update: Edit course status (e.g., mark as "Full" or change schedules).
+
+Delete: Remove outdated courses from the system.
+
+User-Friendly Interface: Intuitive form designs that require no coding knowledge to operate.
+
+💻 Tech Stack
+
+Backend: Node.js, Express.js
+
+Database: MongoDB (Mongoose ODM)
+
+Frontend: EJS (Templating Engine), Bootstrap 5, CSS3
+
+Tools: Git, VS Code
+
+⚡ Performance Optimization
+
+To ensure a high-quality user experience on mobile devices, the application underwent iterative performance auditing using Google Lighthouse.
+
+Optimization Result: Successfully improved the Mobile Performance Score from [Evaluation 1 Score] to [Evaluation 2 Score].
+
+Key Improvements:
+
+Reduced First Contentful Paint (FCP) time by optimizing CSS delivery.
+
+Enhanced accessibility and SEO metrics through semantic HTML structure.
+
+Ensured responsive layout stability across different screen sizes.
+
+Note: Detailed Lighthouse reports (Evaluation 1 & 2) verify these optimization milestones.
+
+Evaluation Record
+
+[Lighthouse Report1.pdf](https://github.com/user-attachments/files/24255421/Lighthouse.Report1.pdf)
+
+[Lighthouse Report2.pdf](https://github.com/user-attachments/files/24255423/Lighthouse.Report2.pdf)
+
+[Lighthouse Report3.pdf](https://github.com/user-attachments/files/24255425/Lighthouse.Report3.pdf)
+
+
+🚀 Getting Started
+
+Follow these steps to run the project locally.
+
+Prerequisites
+
+Node.js (v14 or higher)
+
+MongoDB (Local or Atlas connection string)
+
+Installation
+
+Clone the repository
+
+git clone [https://github.com/Holden-Big-Smart/Course-promotion-webpage.git](https://github.com/Holden-Big-Smart/Course-promotion-webpage.git)
+cd Course-promotion-webpage
+
+
+
+Install dependencies
+
+npm install
+
+
+
+Configure Database
+
+Create a .env file in the root directory (or update app.js directly for local testing).
+
+Add your MongoDB connection string:
+
+DB_URL=mongodb://localhost:27017/course-app
+
+
+
+Run the Application
+
+node app.js
+# or if you use nodemon
+nodemon app.js
+
+
+
+Access the App
+
+Public View: http://localhost:3000
+
+Admin Login: http://localhost:3000/login (or specific admin route)
+```
+📂 Project Structure
+├── models/         # MongoDB Schemas (Mongoose)
+├── public/         # Static files (CSS, Images, Scripts)
+├── routes/         # Express route handlers
+├── views/          # EJS templates
+│   ├── partials/   # Reusable headers/footers
+│   └── ...
+├── app.js          # Entry point & App configuration
+└── package.json    # Project dependencies
+```
+
+
+👨‍💻 Developer Notes
+
+This project demonstrates the transition from static web pages to dynamic, database-driven applications. Key technical challenges solved include:
+
+Designing a RESTful API architecture for efficient data handling.
+
+Implementing Middleware in Express for authentication checks.
+
+Managing database connections and schema validation using Mongoose.
+
+Developed by Jize CHEN
+
+## 👨‍💻 Developer Log
 
 ### **2025年12月13日 (项目启动与基础构建)**
 
