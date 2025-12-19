@@ -18,6 +18,14 @@ Responsive Design: Built with Bootstrap to ensure seamless browsing on mobile, t
 
 Categorized Views: Allows users to filter courses by category (e.g., Arts, Tech, Health).
 
+<img width="2520" height="1446" alt="image" src="https://github.com/user-attachments/assets/3a8b114f-3d39-40fe-86f7-bc274df0cd09" />
+
+<img width="2520" height="1446" alt="image" src="https://github.com/user-attachments/assets/b789015f-af91-47d0-810b-8684b66ce4eb" />
+
+<img width="2520" height="1446" alt="image" src="https://github.com/user-attachments/assets/73dcd66a-06d4-4891-b82a-8f9749bed52a" />
+
+
+
 🛠️ Admin Dashboard (CMS)
 
 Secure Authentication: Protected login area for authorized staff members.
@@ -33,6 +41,12 @@ Update: Edit course status (e.g., mark as "Full" or change schedules).
 Delete: Remove outdated courses from the system.
 
 User-Friendly Interface: Intuitive form designs that require no coding knowledge to operate.
+
+<img width="2520" height="1446" alt="image" src="https://github.com/user-attachments/assets/3293f0d7-da91-42de-8f78-bdfa81209a53" />
+
+<img width="2520" height="1446" alt="image" src="https://github.com/user-attachments/assets/27b9cb95-8fbe-4376-b877-a72a733ad11b" />
+
+
 
 💻 Tech Stack
 
