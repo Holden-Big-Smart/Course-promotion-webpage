@@ -58,7 +58,7 @@ Enhanced accessibility and SEO metrics through semantic HTML structure.
 
 Ensured responsive layout stability across different screen sizes.
 
-Note: Detailed Lighthouse reports (Evaluation 1 & 2) verify these optimization milestones.
+Note: Detailed Lighthouse reports verify these optimization milestones.
 
 Evaluation Record
 
