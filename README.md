@@ -64,9 +64,17 @@ Evaluation Record
 
 [Lighthouse Report1.pdf](https://github.com/user-attachments/files/24255421/Lighthouse.Report1.pdf)
 
+<img width="800" height="300" alt="image" src="https://github.com/user-attachments/assets/1a4d41f3-5903-41ad-87df-7721895a0ed2" />
+
+
 [Lighthouse Report2.pdf](https://github.com/user-attachments/files/24255423/Lighthouse.Report2.pdf)
 
+<img width="800" height="300" alt="image" src="https://github.com/user-attachments/assets/d7102a8e-8908-4749-98d2-3bc61088b75a" />
+
+
 [Lighthouse Report3.pdf](https://github.com/user-attachments/files/24255425/Lighthouse.Report3.pdf)
+
+<img width="800" height="300" alt="image" src="https://github.com/user-attachments/assets/342e2587-d4a5-4e1a-90a1-636f8b079f7a" />
 
 
 🚀 Getting Started
